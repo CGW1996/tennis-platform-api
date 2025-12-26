@@ -1,0 +1,16 @@
+{
+    "experience": 5,
+    "specialties": ["beginner", "intermediate"],
+    "biography": "專業網球教練，擁有5年教學經驗，專精於初學者和中級球員的技術提升。",
+    "hourlyRate": 1500,
+    "currency": "TWD",
+    "languages": ["zh-TW", "en"],
+    "certifications": ["PTR", "CTCA"],
+    "availableHours": {
+        "monday": ["09:00-12:00", "14:00-18:00"],
+        "tuesday": ["09:00-12:00", "14:00-18:00"],
+        "wednesday": ["09:00-12:00"],
+        "friday": ["14:00-18:00"],
+        "saturday": ["09:00-17:00"]
+    }
+}

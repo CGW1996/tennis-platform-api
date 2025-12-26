@@ -1,0 +1,26 @@
+# 開發環境 Dockerfile
+FROM golang:1.24-alpine
+
+# 安裝必要工具
+RUN apk add --no-cache git make
+
+# 設置工作目錄
+WORKDIR /app
+
+# 安裝 air 用於熱重載（使用兼容 Go 1.24 的版本）
+RUN go install github.com/air-verse/air@v1.61.1
+
+# 複製 go mod 文件
+COPY go.mod go.sum ./
+
+# 下載依賴
+RUN go mod download
+
+# 複製源代碼
+COPY . .
+
+# 暴露端口
+EXPOSE 8080
+
+# 使用 air 啟動應用（熱重載）
+CMD ["air", "-c", ".air.toml"]

@@ -1,0 +1,7798 @@
+definitions:
+  dto.AuthResponse:
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  dto.AvailabilityResponse:
+    properties:
+      courtId:
+        type: string
+      date:
+        type: string
+      timeSlots:
+        items:
+          $ref: '#/definitions/dto.TimeSlot'
+        type: array
+    type: object
+  dto.BookingListResponse:
+    properties:
+      bookings:
+        items:
+          $ref: '#/definitions/models.Booking'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dto.CancelLessonRequest:
+    properties:
+      reason:
+        maxLength: 500
+        minLength: 1
+        type: string
+    required:
+    - reason
+    type: object
+  dto.CardActionRequest:
+    properties:
+      action:
+        description: like, dislike, skip
+        type: string
+      targetUserId:
+        type: string
+    required:
+    - action
+    - targetUserId
+    type: object
+  dto.ChatMessageResponse:
+    properties:
+      chatRoomId:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isRead:
+        type: boolean
+      messageType:
+        type: string
+      sender:
+        $ref: '#/definitions/dto.UserInfo'
+      senderId:
+        type: string
+    type: object
+  dto.ChatParticipantResponse:
+    properties:
+      id:
+        type: string
+      isActive:
+        type: boolean
+      joinedAt:
+        type: string
+      lastReadAt:
+        type: string
+      user:
+        $ref: '#/definitions/dto.UserInfo'
+      userId:
+        type: string
+    type: object
+  dto.ChatRoomResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      isActive:
+        type: boolean
+      lastMessage:
+        $ref: '#/definitions/dto.ChatMessageResponse'
+      matchId:
+        type: string
+      name:
+        type: string
+      participants:
+        items:
+          $ref: '#/definitions/dto.ChatParticipantResponse'
+        type: array
+      type:
+        type: string
+      unreadCount:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  dto.CoachVerificationRequest:
+    properties:
+      coachId:
+        type: string
+      isVerified:
+        type: boolean
+      verificationNotes:
+        maxLength: 500
+        type: string
+    required:
+    - coachId
+    - isVerified
+    type: object
+  dto.ConflictDetectionRequest:
+    properties:
+      coachId:
+        type: string
+      duration:
+        maximum: 480
+        minimum: 30
+        type: integer
+      excludeLessonId:
+        type: string
+      scheduledAt:
+        type: string
+    required:
+    - coachId
+    - duration
+    - scheduledAt
+    type: object
+  dto.ConflictResolutionRequest:
+    properties:
+      conflictingLessonId:
+        type: string
+      newScheduledAt:
+        type: string
+    required:
+    - conflictingLessonId
+    - newScheduledAt
+    type: object
+  dto.CourtSearchResponse:
+    properties:
+      courts:
+        items:
+          $ref: '#/definitions/dto.CourtWithDistance'
+        type: array
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dto.CourtWithDistance:
+    properties:
+      address:
+        type: string
+      averageRating:
+        type: number
+      bookings:
+        items:
+          $ref: '#/definitions/models.Booking'
+        type: array
+      contactEmail:
+        type: string
+      contactPhone:
+        type: string
+      courtType:
+        type: string
+      createdAt:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      distance:
+        description: 公里
+        type: number
+      facilities:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      isActive:
+        type: boolean
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      operatingHours:
+        type: object
+      ownerId:
+        type: string
+      pricePerHour:
+        type: number
+      reviews:
+        description: Relations
+        items:
+          $ref: '#/definitions/models.CourtReview'
+        type: array
+      totalReviews:
+        type: integer
+      updatedAt:
+        type: string
+      website:
+        type: string
+    type: object
+  dto.CreateBookingRequest:
+    properties:
+      courtId:
+        type: string
+      endTime:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      startTime:
+        type: string
+    required:
+    - courtId
+    - endTime
+    - startTime
+    type: object
+  dto.CreateChatRoomRequest:
+    properties:
+      matchId:
+        type: string
+      name:
+        type: string
+      participantIds:
+        items:
+          type: string
+        type: array
+      type:
+        description: match, group, direct
+        type: string
+    type: object
+  dto.CreateCoachProfileRequest:
+    properties:
+      availableHours:
+        $ref: '#/definitions/models.AvailableHours'
+      biography:
+        maxLength: 1000
+        type: string
+      certifications:
+        items:
+          type: string
+        type: array
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      experience:
+        maximum: 50
+        minimum: 0
+        type: integer
+      hourlyRate:
+        minimum: 0
+        type: number
+      languages:
+        items:
+          type: string
+        type: array
+      licenseNumber:
+        maxLength: 50
+        minLength: 1
+        type: string
+      specialties:
+        items:
+          type: string
+        type: array
+    required:
+    - experience
+    - hourlyRate
+    - specialties
+    type: object
+  dto.CreateCoachReviewRequest:
+    properties:
+      coachId:
+        type: string
+      comment:
+        maxLength: 1000
+        type: string
+      lessonId:
+        type: string
+      rating:
+        maximum: 5
+        minimum: 1
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+    required:
+    - coachId
+    - rating
+    type: object
+  dto.CreateCourtRequest:
+    properties:
+      address:
+        maxLength: 500
+        minLength: 1
+        type: string
+      contactEmail:
+        type: string
+      contactPhone:
+        maxLength: 20
+        type: string
+      courtType:
+        enum:
+        - hard
+        - clay
+        - grass
+        - indoor
+        - outdoor
+        type: string
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      description:
+        maxLength: 1000
+        type: string
+      facilities:
+        items:
+          type: string
+        type: array
+      images:
+        items:
+          type: string
+        type: array
+      latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      longitude:
+        maximum: 180
+        minimum: -180
+        type: number
+      name:
+        maxLength: 200
+        minLength: 1
+        type: string
+      operatingHours:
+        additionalProperties:
+          type: string
+        type: object
+      ownerId:
+        type: string
+      pricePerHour:
+        minimum: 0
+        type: number
+      website:
+        type: string
+    required:
+    - address
+    - courtType
+    - latitude
+    - longitude
+    - name
+    - pricePerHour
+    type: object
+  dto.CreateLessonRequest:
+    properties:
+      coachId:
+        type: string
+      courtId:
+        type: string
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      duration:
+        maximum: 480
+        minimum: 30
+        type: integer
+      lessonTypeId:
+        type: string
+      level:
+        enum:
+        - beginner
+        - intermediate
+        - advanced
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      price:
+        minimum: 0
+        type: number
+      scheduledAt:
+        type: string
+      studentId:
+        description: 由控制器設置
+        type: string
+      type:
+        enum:
+        - individual
+        - group
+        - clinic
+        type: string
+    required:
+    - coachId
+    - duration
+    - price
+    - scheduledAt
+    - type
+    type: object
+  dto.CreateLessonTypeRequest:
+    properties:
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      description:
+        maxLength: 500
+        type: string
+      duration:
+        description: 30分鐘到8小時
+        maximum: 480
+        minimum: 30
+        type: integer
+      equipment:
+        items:
+          type: string
+        type: array
+      level:
+        enum:
+        - beginner
+        - intermediate
+        - advanced
+        type: string
+      maxParticipants:
+        maximum: 20
+        minimum: 1
+        type: integer
+      minParticipants:
+        maximum: 20
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      prerequisites:
+        maxLength: 500
+        type: string
+      price:
+        minimum: 0
+        type: number
+      type:
+        enum:
+        - individual
+        - group
+        - clinic
+        type: string
+    required:
+    - duration
+    - name
+    - price
+    - type
+    type: object
+  dto.CreateMatchRequest:
+    properties:
+      courtId:
+        type: string
+      matchType:
+        type: string
+      participantIds:
+        items:
+          type: string
+        type: array
+      scheduledAt:
+        type: string
+    required:
+    - matchType
+    - participantIds
+    type: object
+  dto.CreateProfileRequest:
+    properties:
+      bio:
+        maxLength: 500
+        type: string
+      birthDate:
+        type: string
+      firstName:
+        maxLength: 100
+        minLength: 1
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        - other
+        type: string
+      lastName:
+        maxLength: 100
+        minLength: 1
+        type: string
+      latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      locationPrivacy:
+        type: boolean
+      longitude:
+        maximum: 180
+        minimum: -180
+        type: number
+      maxTravelDistance:
+        maximum: 100
+        minimum: 0
+        type: number
+      ntrpLevel:
+        maximum: 7
+        minimum: 1
+        type: number
+      playingFrequency:
+        enum:
+        - casual
+        - regular
+        - competitive
+        type: string
+      playingStyle:
+        enum:
+        - aggressive
+        - defensive
+        - all-court
+        type: string
+      preferredHand:
+        enum:
+        - right
+        - left
+        - both
+        type: string
+      preferredTimes:
+        items:
+          type: string
+        type: array
+      profilePrivacy:
+        enum:
+        - public
+        - friends
+        - private
+        type: string
+    required:
+    - firstName
+    - lastName
+    type: object
+  dto.CreateRacketPriceRequest:
+    properties:
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      isAvailable:
+        type: boolean
+      price:
+        minimum: 0
+        type: number
+      racketId:
+        type: string
+      retailer:
+        maxLength: 100
+        minLength: 1
+        type: string
+      url:
+        type: string
+    required:
+    - price
+    - racketId
+    - retailer
+    type: object
+  dto.CreateRacketRequest:
+    properties:
+      balance:
+        maximum: 380
+        minimum: 280
+        type: integer
+      beamWidth:
+        maximum: 35
+        minimum: 15
+        type: number
+      brand:
+        maxLength: 100
+        minLength: 1
+        type: string
+      controlLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      description:
+        maxLength: 2000
+        type: string
+      headSize:
+        maximum: 140
+        minimum: 80
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      length:
+        maximum: 29
+        minimum: 26
+        type: integer
+      maneuverLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      model:
+        maxLength: 100
+        minLength: 1
+        type: string
+      msrp:
+        minimum: 0
+        type: number
+      powerLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      stabilityLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      stiffness:
+        maximum: 80
+        minimum: 40
+        type: integer
+      stringPattern:
+        type: string
+      swingWeight:
+        maximum: 400
+        minimum: 250
+        type: integer
+      weight:
+        maximum: 400
+        minimum: 200
+        type: integer
+      year:
+        maximum: 2030
+        minimum: 1900
+        type: integer
+    required:
+    - brand
+    - headSize
+    - model
+    - stringPattern
+    - weight
+    type: object
+  dto.CreateRacketReviewRequest:
+    properties:
+      comfortRating:
+        maximum: 5
+        minimum: 1
+        type: integer
+      comment:
+        maxLength: 2000
+        type: string
+      controlRating:
+        maximum: 5
+        minimum: 1
+        type: integer
+      playingStyle:
+        enum:
+        - aggressive
+        - defensive
+        - all-court
+        type: string
+      powerRating:
+        maximum: 5
+        minimum: 1
+        type: integer
+      racketId:
+        type: string
+      rating:
+        maximum: 5
+        minimum: 1
+        type: integer
+      usageDuration:
+        description: 使用月數
+        maximum: 120
+        minimum: 0
+        type: integer
+    required:
+    - playingStyle
+    - racketId
+    - rating
+    type: object
+  dto.CreateReviewRequest:
+    properties:
+      comment:
+        maxLength: 1000
+        type: string
+      courtId:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      rating:
+        maximum: 5
+        minimum: 1
+        type: integer
+    required:
+    - courtId
+    - rating
+    type: object
+  dto.FindMatchesRequest:
+    properties:
+      age_range:
+        $ref: '#/definitions/services.AgeRange'
+      gender:
+        type: string
+      limit:
+        type: integer
+      max_distance:
+        type: number
+      min_reputation_score:
+        type: number
+      ntrp_level:
+        type: number
+      playing_frequency:
+        type: string
+      preferred_times:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  dto.IntelligentSchedulingRequest:
+    properties:
+      dateRange:
+        description: '["2024-12-01", "2024-12-02"]'
+        items:
+          type: string
+        type: array
+      location:
+        $ref: '#/definitions/dto.Location'
+      maxDistance:
+        description: 公里
+        minimum: 0
+        type: number
+      maxPrice:
+        minimum: 0
+        type: number
+      minPrice:
+        minimum: 0
+        type: number
+      ntrpLevel:
+        maximum: 7
+        minimum: 1
+        type: number
+      preferredDays:
+        description: '[1,2,3,4,5] (Monday-Friday)'
+        items:
+          type: integer
+        type: array
+      preferredLessonType:
+        enum:
+        - individual
+        - group
+        - clinic
+        type: string
+      preferredTimes:
+        description: '["09:00-12:00", "14:00-18:00"]'
+        items:
+          type: string
+        type: array
+      studentId:
+        type: string
+    required:
+    - dateRange
+    - studentId
+    type: object
+  dto.LinkOAuthAccountRequest:
+    properties:
+      code:
+        type: string
+      provider:
+        enum:
+        - google
+        - facebook
+        - apple
+        type: string
+      state:
+        type: string
+    required:
+    - code
+    - provider
+    - state
+    type: object
+  dto.Location:
+    properties:
+      address:
+        maxLength: 200
+        type: string
+      latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      longitude:
+        maximum: 180
+        minimum: -180
+        type: number
+    required:
+    - latitude
+    - longitude
+    type: object
+  dto.LocationUpdateRequest:
+    properties:
+      latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      locationPrivacy:
+        type: boolean
+      longitude:
+        maximum: 180
+        minimum: -180
+        type: number
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.ManuallyAdjustSkillLevelRequest:
+    properties:
+      newLevel:
+        maximum: 7
+        minimum: 1
+        type: number
+      reason:
+        type: string
+    required:
+    - newLevel
+    - reason
+    type: object
+  dto.MarkReviewHelpfulRequest:
+    properties:
+      isHelpful:
+        type: boolean
+      reviewId:
+        type: string
+    required:
+    - isHelpful
+    - reviewId
+    type: object
+  dto.OAuthLoginRequest:
+    properties:
+      code:
+        type: string
+      provider:
+        enum:
+        - google
+        - facebook
+        - apple
+        type: string
+      state:
+        type: string
+    required:
+    - code
+    - provider
+    - state
+    type: object
+  dto.OptimalTimeRequest:
+    properties:
+      coachId:
+        type: string
+      dateRange:
+        items:
+          type: string
+        type: array
+      location:
+        $ref: '#/definitions/dto.Location'
+      maxDistance:
+        minimum: 0
+        type: number
+      maxPrice:
+        minimum: 0
+        type: number
+      minPrice:
+        minimum: 0
+        type: number
+      ntrpLevel:
+        maximum: 7
+        minimum: 1
+        type: number
+      preferredDays:
+        items:
+          type: integer
+        type: array
+      preferredLessonType:
+        enum:
+        - individual
+        - group
+        - clinic
+        type: string
+      preferredTimes:
+        items:
+          type: string
+        type: array
+      studentId:
+        type: string
+    required:
+    - coachId
+    - dateRange
+    - studentId
+    type: object
+  dto.PlayingStyleStat:
+    properties:
+      averageRating:
+        type: number
+      count:
+        type: integer
+    type: object
+  dto.RacketReviewListResponse:
+    properties:
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      reviews:
+        items:
+          $ref: '#/definitions/models.RacketReview'
+        type: array
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dto.RacketReviewStatistics:
+    properties:
+      averageRating:
+        type: number
+      comfortRating:
+        type: number
+      controlRating:
+        type: number
+      playingStyleStats:
+        additionalProperties:
+          $ref: '#/definitions/dto.PlayingStyleStat'
+        type: object
+      powerRating:
+        type: number
+      racketId:
+        type: string
+      ratingDistribution:
+        additionalProperties:
+          type: integer
+        type: object
+      totalReviews:
+        type: integer
+      usageDurationStats:
+        $ref: '#/definitions/dto.UsageDurationStat'
+    type: object
+  dto.RacketSearchResponse:
+    properties:
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      rackets:
+        items:
+          $ref: '#/definitions/models.Racket'
+        type: array
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dto.RecordMatchAttendanceRequest:
+    properties:
+      matchId:
+        type: string
+      status:
+        enum:
+        - completed
+        - cancelled
+        - no_show
+        type: string
+    required:
+    - matchId
+    - status
+    type: object
+  dto.RecordMatchPunctualityRequest:
+    properties:
+      arrivalTime:
+        type: string
+      matchId:
+        type: string
+    required:
+    - arrivalTime
+    - matchId
+    type: object
+  dto.RecordMatchResultRequest:
+    properties:
+      loserId:
+        type: string
+      score:
+        type: string
+      winnerId:
+        type: string
+    required:
+    - loserId
+    - score
+    - winnerId
+    type: object
+  dto.RecordSkillLevelAccuracyRequest:
+    properties:
+      matchId:
+        type: string
+      observedLevel:
+        maximum: 7
+        minimum: 1
+        type: number
+      reportedLevel:
+        maximum: 7
+        minimum: 1
+        type: number
+    required:
+    - matchId
+    - observedLevel
+    - reportedLevel
+    type: object
+  dto.RefreshTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
+  dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - firstName
+    - lastName
+    - password
+    type: object
+  dto.ReportReviewRequest:
+    properties:
+      comment:
+        maxLength: 500
+        type: string
+      reason:
+        enum:
+        - spam
+        - inappropriate
+        - fake
+        - offensive
+        - other
+        type: string
+    required:
+    - reason
+    type: object
+  dto.ResetPasswordRequest:
+    properties:
+      password:
+        minLength: 8
+        type: string
+      token:
+        type: string
+    required:
+    - password
+    - token
+    type: object
+  dto.ReviewListResponse:
+    properties:
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      reviews:
+        items:
+          $ref: '#/definitions/models.CourtReview'
+        type: array
+      total:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dto.ReviewStatistics:
+    properties:
+      averageRating:
+        type: number
+      ratingBreakdown:
+        additionalProperties:
+          type: integer
+        type: object
+      recentReviews:
+        items:
+          $ref: '#/definitions/models.CourtReview'
+        type: array
+      totalReviews:
+        type: integer
+    type: object
+  dto.ScheduleItem:
+    properties:
+      dayOfWeek:
+        maximum: 6
+        minimum: 0
+        type: integer
+      endTime:
+        type: string
+      isActive:
+        type: boolean
+      startTime:
+        type: string
+    required:
+    - dayOfWeek
+    - endTime
+    - startTime
+    type: object
+  dto.SendMessageRequest:
+    properties:
+      chatRoomId:
+        type: string
+      content:
+        type: string
+      messageType:
+        description: text, image, file
+        type: string
+    required:
+    - chatRoomId
+    - content
+    type: object
+  dto.SubmitBehaviorReviewRequest:
+    properties:
+      comment:
+        type: string
+      matchId:
+        type: string
+      rating:
+        maximum: 5
+        minimum: 1
+        type: number
+      tags:
+        items:
+          type: string
+        type: array
+    required:
+    - rating
+    type: object
+  dto.TimeSlot:
+    properties:
+      available:
+        type: boolean
+      endTime:
+        type: string
+      price:
+        type: number
+      startTime:
+        type: string
+    type: object
+  dto.UpdateBookingRequest:
+    properties:
+      endTime:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      startTime:
+        type: string
+      status:
+        enum:
+        - pending
+        - confirmed
+        - cancelled
+        - completed
+        type: string
+    type: object
+  dto.UpdateCoachProfileRequest:
+    properties:
+      availableHours:
+        $ref: '#/definitions/models.AvailableHours'
+      biography:
+        maxLength: 1000
+        type: string
+      certifications:
+        items:
+          type: string
+        type: array
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      experience:
+        maximum: 50
+        minimum: 0
+        type: integer
+      hourlyRate:
+        minimum: 0
+        type: number
+      isActive:
+        type: boolean
+      languages:
+        items:
+          type: string
+        type: array
+      licenseNumber:
+        maxLength: 50
+        minLength: 1
+        type: string
+      specialties:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.UpdateCoachReviewRequest:
+    properties:
+      comment:
+        maxLength: 1000
+        type: string
+      rating:
+        maximum: 5
+        minimum: 1
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.UpdateCourtRequest:
+    properties:
+      address:
+        maxLength: 500
+        minLength: 1
+        type: string
+      contactEmail:
+        type: string
+      contactPhone:
+        maxLength: 20
+        type: string
+      courtType:
+        enum:
+        - hard
+        - clay
+        - grass
+        - indoor
+        - outdoor
+        type: string
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      description:
+        maxLength: 1000
+        type: string
+      facilities:
+        items:
+          type: string
+        type: array
+      images:
+        items:
+          type: string
+        type: array
+      isActive:
+        type: boolean
+      latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      longitude:
+        maximum: 180
+        minimum: -180
+        type: number
+      name:
+        maxLength: 200
+        minLength: 1
+        type: string
+      operatingHours:
+        additionalProperties:
+          type: string
+        type: object
+      pricePerHour:
+        minimum: 0
+        type: number
+      website:
+        type: string
+    type: object
+  dto.UpdateLessonRequest:
+    properties:
+      courtId:
+        type: string
+      notes:
+        maxLength: 500
+        type: string
+      scheduledAt:
+        type: string
+      status:
+        enum:
+        - scheduled
+        - in_progress
+        - completed
+        - cancelled
+        type: string
+    type: object
+  dto.UpdateLessonTypeRequest:
+    properties:
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      description:
+        maxLength: 500
+        type: string
+      duration:
+        maximum: 480
+        minimum: 30
+        type: integer
+      equipment:
+        items:
+          type: string
+        type: array
+      isActive:
+        type: boolean
+      level:
+        enum:
+        - beginner
+        - intermediate
+        - advanced
+        type: string
+      maxParticipants:
+        maximum: 20
+        minimum: 1
+        type: integer
+      minParticipants:
+        maximum: 20
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 100
+        minLength: 1
+        type: string
+      prerequisites:
+        maxLength: 500
+        type: string
+      price:
+        minimum: 0
+        type: number
+      type:
+        enum:
+        - individual
+        - group
+        - clinic
+        type: string
+    type: object
+  dto.UpdateProfileRequest:
+    properties:
+      bio:
+        maxLength: 500
+        type: string
+      birthDate:
+        type: string
+      firstName:
+        maxLength: 100
+        minLength: 1
+        type: string
+      gender:
+        enum:
+        - male
+        - female
+        - other
+        type: string
+      lastName:
+        maxLength: 100
+        minLength: 1
+        type: string
+      latitude:
+        maximum: 90
+        minimum: -90
+        type: number
+      locationPrivacy:
+        type: boolean
+      longitude:
+        maximum: 180
+        minimum: -180
+        type: number
+      maxTravelDistance:
+        maximum: 100
+        minimum: 0
+        type: number
+      ntrpLevel:
+        maximum: 7
+        minimum: 1
+        type: number
+      playingFrequency:
+        enum:
+        - casual
+        - regular
+        - competitive
+        type: string
+      playingStyle:
+        enum:
+        - aggressive
+        - defensive
+        - all-court
+        type: string
+      preferredHand:
+        enum:
+        - right
+        - left
+        - both
+        type: string
+      preferredTimes:
+        items:
+          type: string
+        type: array
+      profilePrivacy:
+        enum:
+        - public
+        - friends
+        - private
+        type: string
+    type: object
+  dto.UpdateRacketPriceRequest:
+    properties:
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      isAvailable:
+        type: boolean
+      price:
+        minimum: 0
+        type: number
+      retailer:
+        maxLength: 100
+        minLength: 1
+        type: string
+      url:
+        type: string
+    type: object
+  dto.UpdateRacketRequest:
+    properties:
+      balance:
+        maximum: 380
+        minimum: 280
+        type: integer
+      beamWidth:
+        maximum: 35
+        minimum: 15
+        type: number
+      brand:
+        maxLength: 100
+        minLength: 1
+        type: string
+      controlLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      currency:
+        enum:
+        - TWD
+        - USD
+        - EUR
+        type: string
+      description:
+        maxLength: 2000
+        type: string
+      headSize:
+        maximum: 140
+        minimum: 80
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      isActive:
+        type: boolean
+      length:
+        maximum: 29
+        minimum: 26
+        type: integer
+      maneuverLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      model:
+        maxLength: 100
+        minLength: 1
+        type: string
+      msrp:
+        minimum: 0
+        type: number
+      powerLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      stabilityLevel:
+        maximum: 10
+        minimum: 1
+        type: integer
+      stiffness:
+        maximum: 80
+        minimum: 40
+        type: integer
+      stringPattern:
+        type: string
+      swingWeight:
+        maximum: 400
+        minimum: 250
+        type: integer
+      weight:
+        maximum: 400
+        minimum: 200
+        type: integer
+      year:
+        maximum: 2030
+        minimum: 1900
+        type: integer
+    type: object
+  dto.UpdateReputationRequest:
+    properties:
+      behaviorRating:
+        type: number
+      matchCompleted:
+        type: boolean
+      wasOnTime:
+        type: boolean
+    type: object
+  dto.UpdateReviewRequest:
+    properties:
+      comment:
+        maxLength: 1000
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      rating:
+        maximum: 5
+        minimum: 1
+        type: integer
+    type: object
+  dto.UpdateScheduleRequest:
+    properties:
+      schedules:
+        items:
+          $ref: '#/definitions/dto.ScheduleItem'
+        type: array
+    required:
+    - schedules
+    type: object
+  dto.UsageDurationStat:
+    properties:
+      averageDuration:
+        type: number
+      maxDuration:
+        type: integer
+      minDuration:
+        type: integer
+    type: object
+  dto.UserInfo:
+    properties:
+      avatarUrl:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+    type: object
+  dto.UserPreferencesRequest:
+    properties:
+      locationPrivacy:
+        type: boolean
+      maxTravelDistance:
+        maximum: 100
+        minimum: 0
+        type: number
+      playingFrequency:
+        enum:
+        - casual
+        - regular
+        - competitive
+        type: string
+      playingStyle:
+        enum:
+        - aggressive
+        - defensive
+        - all-court
+        type: string
+      preferredTimes:
+        items:
+          type: string
+        type: array
+      profilePrivacy:
+        enum:
+        - public
+        - friends
+        - private
+        type: string
+    type: object
+  models.AvailableHours:
+    additionalProperties:
+      items:
+        type: string
+      type: array
+    type: object
+  models.BehaviorReview:
+    properties:
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      match:
+        $ref: '#/definitions/models.Match'
+      matchId:
+        type: string
+      rating:
+        description: 1-5分
+        type: number
+      reviewer:
+        $ref: '#/definitions/models.User'
+      reviewerId:
+        description: 評價者
+        type: string
+      tags:
+        description: 評價標籤：friendly, punctual, skilled, etc.
+        items:
+          type: string
+        type: array
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        description: 被評價者
+        type: string
+    type: object
+  models.Booking:
+    properties:
+      court:
+        allOf:
+        - $ref: '#/definitions/models.Court'
+        description: 關聯
+      courtId:
+        type: string
+      createdAt:
+        type: string
+      endTime:
+        type: string
+      id:
+        type: string
+      notes:
+        type: string
+      paymentId:
+        type: string
+      startTime:
+        type: string
+      status:
+        description: pending, confirmed, cancelled, completed
+        type: string
+      totalPrice:
+        type: number
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.ChatMessage:
+    properties:
+      chatRoom:
+        allOf:
+        - $ref: '#/definitions/models.ChatRoom'
+        description: 關聯
+      chatRoomId:
+        type: string
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isRead:
+        type: boolean
+      messageType:
+        description: text, image, file
+        type: string
+      sender:
+        $ref: '#/definitions/models.User'
+      senderId:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ChatParticipant:
+    properties:
+      chatRoom:
+        allOf:
+        - $ref: '#/definitions/models.ChatRoom'
+        description: 關聯
+      chatRoomId:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isActive:
+        type: boolean
+      joinedAt:
+        type: string
+      lastReadAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.ChatRoom:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      isActive:
+        type: boolean
+      match:
+        allOf:
+        - $ref: '#/definitions/models.Match'
+        description: 關聯
+      matchId:
+        type: string
+      messages:
+        items:
+          $ref: '#/definitions/models.ChatMessage'
+        type: array
+      name:
+        type: string
+      participants:
+        items:
+          $ref: '#/definitions/models.ChatParticipant'
+        type: array
+      type:
+        description: match, group, direct
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Club:
+    properties:
+      address:
+        type: string
+      averageRating:
+        type: number
+      contactEmail:
+        type: string
+      contactPhone:
+        type: string
+      createdAt:
+        type: string
+      currency:
+        type: string
+      currentMembers:
+        type: integer
+      description:
+        type: string
+      events:
+        items:
+          $ref: '#/definitions/models.ClubEvent'
+        type: array
+      facilities:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      isActive:
+        type: boolean
+      latitude:
+        type: number
+      longitude:
+        type: number
+      maxMembers:
+        type: integer
+      members:
+        description: 關聯
+        items:
+          $ref: '#/definitions/models.ClubMember'
+        type: array
+      membershipFees:
+        additionalProperties:
+          format: float64
+          type: number
+        description: '{"monthly": 2000, "yearly": 20000}'
+        type: object
+      name:
+        type: string
+      ownerId:
+        type: string
+      reviews:
+        items:
+          $ref: '#/definitions/models.ClubReview'
+        type: array
+      totalReviews:
+        type: integer
+      updatedAt:
+        type: string
+      website:
+        type: string
+    type: object
+  models.ClubEvent:
+    properties:
+      club:
+        allOf:
+        - $ref: '#/definitions/models.Club'
+        description: 關聯
+      clubId:
+        type: string
+      createdAt:
+        type: string
+      currency:
+        type: string
+      currentParticipants:
+        type: integer
+      description:
+        type: string
+      endTime:
+        type: string
+      eventType:
+        description: tournament, social, training, meeting
+        type: string
+      id:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      isPublic:
+        type: boolean
+      location:
+        type: string
+      maxParticipants:
+        type: integer
+      participants:
+        items:
+          $ref: '#/definitions/models.ClubEventParticipant'
+        type: array
+      registrationFee:
+        type: number
+      startTime:
+        type: string
+      status:
+        description: upcoming, ongoing, completed, cancelled
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ClubEventParticipant:
+    properties:
+      createdAt:
+        type: string
+      event:
+        allOf:
+        - $ref: '#/definitions/models.ClubEvent'
+        description: 關聯
+      eventId:
+        type: string
+      id:
+        type: string
+      paymentId:
+        type: string
+      registeredAt:
+        type: string
+      status:
+        description: registered, attended, no_show, cancelled
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.ClubMember:
+    properties:
+      club:
+        allOf:
+        - $ref: '#/definitions/models.Club'
+        description: 關聯
+      clubId:
+        type: string
+      createdAt:
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: string
+      joinedAt:
+        type: string
+      membershipType:
+        description: monthly, yearly, lifetime
+        type: string
+      paymentId:
+        type: string
+      status:
+        description: active, suspended, expired
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.ClubReview:
+    properties:
+      club:
+        allOf:
+        - $ref: '#/definitions/models.Club'
+        description: 關聯
+      clubId:
+        type: string
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isHelpful:
+        type: integer
+      rating:
+        type: integer
+      tags:
+        description: friendly, professional, well-maintained
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.Coach:
+    properties:
+      availableHours:
+        allOf:
+        - $ref: '#/definitions/models.AvailableHours'
+        description: '{"monday": ["09:00-12:00", "14:00-18:00"]}'
+      averageRating:
+        type: number
+      biography:
+        type: string
+      certifications:
+        items:
+          type: string
+        type: array
+      createdAt:
+        type: string
+      currency:
+        type: string
+      experience:
+        description: 年數
+        type: integer
+      hourlyRate:
+        type: number
+      id:
+        type: string
+      isActive:
+        type: boolean
+      isVerified:
+        type: boolean
+      languages:
+        items:
+          type: string
+        type: array
+      lessons:
+        items:
+          $ref: '#/definitions/models.Lesson'
+        type: array
+      licenseNumber:
+        type: string
+      reviews:
+        items:
+          $ref: '#/definitions/models.CoachReview'
+        type: array
+      specialties:
+        description: beginner, intermediate, advanced, junior
+        items:
+          type: string
+        type: array
+      totalLessons:
+        type: integer
+      totalReviews:
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  models.CoachReview:
+    properties:
+      coach:
+        allOf:
+        - $ref: '#/definitions/models.Coach'
+        description: 關聯
+      coachId:
+        type: string
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isHelpful:
+        type: integer
+      lesson:
+        $ref: '#/definitions/models.Lesson'
+      lessonId:
+        type: string
+      rating:
+        type: integer
+      tags:
+        description: patient, professional, knowledgeable
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.Court:
+    properties:
+      address:
+        type: string
+      averageRating:
+        type: number
+      bookings:
+        items:
+          $ref: '#/definitions/models.Booking'
+        type: array
+      contactEmail:
+        type: string
+      contactPhone:
+        type: string
+      courtType:
+        type: string
+      createdAt:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      facilities:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      isActive:
+        type: boolean
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      operatingHours:
+        type: object
+      ownerId:
+        type: string
+      pricePerHour:
+        type: number
+      reviews:
+        description: Relations
+        items:
+          $ref: '#/definitions/models.CourtReview'
+        type: array
+      totalReviews:
+        type: integer
+      updatedAt:
+        type: string
+      website:
+        type: string
+    type: object
+  models.CourtReview:
+    properties:
+      comment:
+        type: string
+      court:
+        allOf:
+        - $ref: '#/definitions/models.Court'
+        description: 關聯
+      courtId:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      isHelpful:
+        type: integer
+      isReported:
+        type: boolean
+      moderatedAt:
+        type: string
+      moderatedBy:
+        type: string
+      rating:
+        type: integer
+      reportCount:
+        type: integer
+      reports:
+        items:
+          $ref: '#/definitions/models.ReviewReport'
+        type: array
+      status:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.Lesson:
+    properties:
+      cancelReason:
+        type: string
+      coach:
+        allOf:
+        - $ref: '#/definitions/models.Coach'
+        description: 關聯
+      coachId:
+        type: string
+      court:
+        $ref: '#/definitions/models.Court'
+      courtId:
+        type: string
+      createdAt:
+        type: string
+      currency:
+        type: string
+      duration:
+        description: 分鐘
+        type: integer
+      id:
+        type: string
+      lessonType:
+        $ref: '#/definitions/models.LessonType'
+      lessonTypeId:
+        type: string
+      level:
+        description: beginner, intermediate, advanced
+        type: string
+      notes:
+        type: string
+      paymentId:
+        type: string
+      price:
+        type: number
+      review:
+        $ref: '#/definitions/models.CoachReview'
+      scheduledAt:
+        type: string
+      status:
+        description: scheduled, in_progress, completed, cancelled
+        type: string
+      student:
+        $ref: '#/definitions/models.User'
+      studentId:
+        type: string
+      type:
+        description: individual, group, clinic
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.LessonType:
+    properties:
+      coach:
+        allOf:
+        - $ref: '#/definitions/models.Coach'
+        description: 關聯
+      coachId:
+        type: string
+      createdAt:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      duration:
+        description: 分鐘
+        type: integer
+      equipment:
+        description: 需要的設備
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      isActive:
+        type: boolean
+      lessons:
+        items:
+          $ref: '#/definitions/models.Lesson'
+        type: array
+      level:
+        description: beginner, intermediate, advanced
+        type: string
+      maxParticipants:
+        description: 最大參與人數（團體課程用）
+        type: integer
+      minParticipants:
+        description: 最小參與人數（團體課程用）
+        type: integer
+      name:
+        type: string
+      prerequisites:
+        description: 先決條件
+        type: string
+      price:
+        type: number
+      type:
+        description: individual, group, clinic
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.Match:
+    properties:
+      chatRoom:
+        $ref: '#/definitions/models.ChatRoom'
+      completedAt:
+        type: string
+      court:
+        allOf:
+        - $ref: '#/definitions/models.Court'
+        description: 關聯
+      courtId:
+        type: string
+      createdAt:
+        type: string
+      duration:
+        description: 分鐘
+        type: integer
+      id:
+        type: string
+      notes:
+        type: string
+      participants:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+      results:
+        items:
+          $ref: '#/definitions/models.MatchResult'
+        type: array
+      scheduledAt:
+        type: string
+      startedAt:
+        type: string
+      status:
+        description: pending, confirmed, in_progress, completed, cancelled
+        type: string
+      type:
+        description: casual, practice, tournament
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.MatchResult:
+    properties:
+      confirmedBy:
+        items:
+          type: string
+        type: array
+      createdAt:
+        type: string
+      id:
+        type: string
+      isConfirmed:
+        type: boolean
+      loser:
+        $ref: '#/definitions/models.User'
+      loserId:
+        type: string
+      match:
+        allOf:
+        - $ref: '#/definitions/models.Match'
+        description: 關聯
+      matchId:
+        type: string
+      score:
+        description: '"6-4, 6-2"'
+        type: string
+      updatedAt:
+        type: string
+      winner:
+        $ref: '#/definitions/models.User'
+      winnerId:
+        type: string
+    type: object
+  models.MatchStatistics:
+    properties:
+      attendanceRate:
+        type: number
+      averageMatchDuration:
+        description: 分鐘
+        type: integer
+      cancelledMatches:
+        type: integer
+      completedMatches:
+        type: integer
+      favoriteCourtType:
+        type: string
+      lostMatches:
+        type: integer
+      monthlyStats:
+        items:
+          $ref: '#/definitions/models.MonthlyMatchStats'
+        type: array
+      mostPlayedWith:
+        description: 最常配對的用戶ID
+        items:
+          type: string
+        type: array
+      recentMatches:
+        items:
+          $ref: '#/definitions/models.Match'
+        type: array
+      skillLevelProgression:
+        items:
+          $ref: '#/definitions/models.SkillLevelRecord'
+        type: array
+      totalMatches:
+        type: integer
+      userId:
+        type: string
+      winRate:
+        type: number
+      wonMatches:
+        type: integer
+    type: object
+  models.MonthlyMatchStats:
+    properties:
+      averageRating:
+        type: number
+      completedMatches:
+        type: integer
+      month:
+        type: integer
+      totalMatches:
+        type: integer
+      winRate:
+        type: number
+      year:
+        type: integer
+    type: object
+  models.OAuthAccount:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: string
+      provider:
+        description: google, facebook, apple
+        type: string
+      providerId:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  models.PunctualityRecord:
+    properties:
+      createdAt:
+        type: string
+      delayMinutes:
+        type: integer
+      id:
+        type: string
+      isOnTime:
+        type: boolean
+      match:
+        $ref: '#/definitions/models.Match'
+      matchId:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  models.Racket:
+    properties:
+      averageRating:
+        type: number
+      balance:
+        description: 毫米
+        type: integer
+      beamWidth:
+        description: 毫米
+        type: number
+      brand:
+        type: string
+      controlLevel:
+        type: integer
+      createdAt:
+        type: string
+      currency:
+        type: string
+      description:
+        type: string
+      headSize:
+        description: 平方英寸
+        type: integer
+      id:
+        type: string
+      images:
+        items:
+          type: string
+        type: array
+      isActive:
+        type: boolean
+      length:
+        description: 英寸
+        type: integer
+      maneuverLevel:
+        type: integer
+      model:
+        type: string
+      msrp:
+        description: 建議售價
+        type: number
+      powerLevel:
+        type: integer
+      prices:
+        items:
+          $ref: '#/definitions/models.RacketPrice'
+        type: array
+      reviews:
+        description: 關聯
+        items:
+          $ref: '#/definitions/models.RacketReview'
+        type: array
+      stabilityLevel:
+        type: integer
+      stiffness:
+        description: RA值
+        type: integer
+      stringPattern:
+        description: '"16x19"'
+        type: string
+      swingWeight:
+        type: integer
+      totalReviews:
+        type: integer
+      updatedAt:
+        type: string
+      weight:
+        description: 克
+        type: integer
+      year:
+        type: integer
+    type: object
+  models.RacketPrice:
+    properties:
+      createdAt:
+        type: string
+      currency:
+        type: string
+      id:
+        type: string
+      isAvailable:
+        type: boolean
+      lastChecked:
+        type: string
+      price:
+        type: number
+      racket:
+        allOf:
+        - $ref: '#/definitions/models.Racket'
+        description: 關聯
+      racketId:
+        type: string
+      retailer:
+        type: string
+      updatedAt:
+        type: string
+      url:
+        type: string
+    type: object
+  models.RacketReview:
+    properties:
+      comfortRating:
+        type: integer
+      comment:
+        type: string
+      controlRating:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: string
+      isHelpful:
+        type: integer
+      playingStyle:
+        description: aggressive, defensive, all-court
+        type: string
+      powerRating:
+        type: integer
+      racket:
+        allOf:
+        - $ref: '#/definitions/models.Racket'
+        description: 關聯
+      racketId:
+        type: string
+      rating:
+        type: integer
+      updatedAt:
+        type: string
+      usageDuration:
+        description: 使用月數
+        type: integer
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.ReputationHistory:
+    properties:
+      behaviorReviews:
+        items:
+          $ref: '#/definitions/models.BehaviorReview'
+        type: array
+      punctualityRecords:
+        items:
+          $ref: '#/definitions/models.PunctualityRecord'
+        type: array
+      skillRecords:
+        items:
+          $ref: '#/definitions/models.SkillAccuracyRecord'
+        type: array
+      userId:
+        type: string
+    type: object
+  models.ReputationScore:
+    properties:
+      attendanceRate:
+        description: 出席率 (0-100)
+        type: number
+      behaviorRating:
+        description: 行為評分 (1-5)
+        type: number
+      cancelledMatches:
+        type: integer
+      completedMatches:
+        type: integer
+      id:
+        type: string
+      overallScore:
+        description: 綜合分數 (0-100)
+        type: number
+      punctualityScore:
+        description: 準時度 (0-100)
+        type: number
+      skillAccuracy:
+        description: 技術等級準確度 (0-100)
+        type: number
+      totalMatches:
+        type: integer
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  models.ReviewReport:
+    properties:
+      comment:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      reason:
+        type: string
+      review:
+        allOf:
+        - $ref: '#/definitions/models.CourtReview'
+        description: 關聯
+      reviewId:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userId:
+        type: string
+    type: object
+  models.SkillAccuracyRecord:
+    properties:
+      accuracy:
+        description: 準確度分數 (0-100)
+        type: number
+      actualLevel:
+        description: 實際表現等級
+        type: number
+      createdAt:
+        type: string
+      id:
+        type: string
+      match:
+        $ref: '#/definitions/models.Match'
+      matchId:
+        type: string
+      reportedLevel:
+        description: 用戶自報等級
+        type: number
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  models.SkillLevelRecord:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      match:
+        $ref: '#/definitions/models.Match'
+      matchId:
+        type: string
+      newLevel:
+        type: number
+      oldLevel:
+        type: number
+      reason:
+        description: manual, auto_adjustment, match_result
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  models.User:
+    properties:
+      clubMembers:
+        items:
+          $ref: '#/definitions/models.ClubMember'
+        type: array
+      coachReviews:
+        items:
+          $ref: '#/definitions/models.CoachReview'
+        type: array
+      courtReviews:
+        items:
+          $ref: '#/definitions/models.CourtReview'
+        type: array
+      createdAt:
+        type: string
+      email:
+        type: string
+      emailVerified:
+        type: boolean
+      id:
+        type: string
+      isActive:
+        type: boolean
+      lastLoginAt:
+        type: string
+      lessons:
+        items:
+          $ref: '#/definitions/models.Lesson'
+        type: array
+      matches:
+        items:
+          $ref: '#/definitions/models.Match'
+        type: array
+      oauthAccounts:
+        items:
+          $ref: '#/definitions/models.OAuthAccount'
+        type: array
+      phone:
+        type: string
+      phoneVerified:
+        type: boolean
+      profile:
+        allOf:
+        - $ref: '#/definitions/models.UserProfile'
+        description: 關聯
+      racketReviews:
+        items:
+          $ref: '#/definitions/models.RacketReview'
+        type: array
+      updatedAt:
+        type: string
+    type: object
+  models.UserPrivacySettings:
+    properties:
+      allowStatisticsSharing:
+        type: boolean
+      createdAt:
+        type: string
+      showBehaviorReviews:
+        type: boolean
+      showDetailedStats:
+        type: boolean
+      showMatchHistory:
+        type: boolean
+      showReputationScore:
+        type: boolean
+      showSkillProgression:
+        type: boolean
+      showWinLossRecord:
+        type: boolean
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  models.UserProfile:
+    properties:
+      avatarUrl:
+        type: string
+      bio:
+        type: string
+      birthDate:
+        type: string
+      createdAt:
+        type: string
+      firstName:
+        type: string
+      gender:
+        type: string
+      lastName:
+        type: string
+      latitude:
+        type: number
+      locationPrivacy:
+        description: true = 隱藏精確位置
+        type: boolean
+      longitude:
+        type: number
+      maxTravelDistance:
+        description: 公里
+        type: number
+      ntrpLevel:
+        type: number
+      playingFrequency:
+        description: casual, regular, competitive
+        type: string
+      playingStyle:
+        description: aggressive, defensive, all-court
+        type: string
+      preferredHand:
+        type: string
+      preferredTimes:
+        items:
+          type: string
+        type: array
+      profilePrivacy:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/models.User'
+        description: 關聯
+      userId:
+        type: string
+    type: object
+  services.AgeRange:
+    properties:
+      max:
+        type: integer
+      min:
+        type: integer
+    type: object
+  usecases.ReputationStats:
+    properties:
+      activeUsers:
+        type: integer
+      averageScore:
+        type: number
+      highReputationUsers:
+        type: integer
+      totalUsers:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: 網球平台後端 API 服務
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: 網球平台 API
+  version: "1.0"
+paths:
+  /api/reputation/leaderboard:
+    get:
+      consumes:
+      - application/json
+      description: 獲取信譽分數排行榜
+      parameters:
+      - default: 50
+        description: 返回數量限制
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ReputationScore'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取信譽排行榜
+      tags:
+      - reputation
+  /api/reputation/stats:
+    get:
+      consumes:
+      - application/json
+      description: 獲取平台信譽系統的統計信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/usecases.ReputationStats'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取信譽統計信息
+      tags:
+      - reputation
+  /api/reputation/users/{userId}/attendance:
+    post:
+      consumes:
+      - application/json
+      description: 記錄用戶的比賽出席情況，影響出席率評分
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: 出席記錄請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RecordMatchAttendanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 記錄比賽出席情況
+      tags:
+      - reputation
+  /api/reputation/users/{userId}/behavior-review:
+    post:
+      consumes:
+      - application/json
+      description: 對其他用戶提交行為評價，影響其行為評分
+      parameters:
+      - description: 被評價用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: 行為評價請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SubmitBehaviorReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 提交行為評價
+      tags:
+      - reputation
+  /api/reputation/users/{userId}/history:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定用戶的詳細信譽歷史記錄
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ReputationHistory'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取用戶信譽歷史記錄
+      tags:
+      - reputation
+  /api/reputation/users/{userId}/punctuality:
+    post:
+      consumes:
+      - application/json
+      description: 記錄用戶的比賽準時情況，影響準時度評分
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: 準時記錄請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RecordMatchPunctualityRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 記錄比賽準時情況
+      tags:
+      - reputation
+  /api/reputation/users/{userId}/score:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定用戶的信譽分數和統計信息
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ReputationScore'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取用戶信譽分數
+      tags:
+      - reputation
+  /api/reputation/users/{userId}/skill-accuracy:
+    post:
+      consumes:
+      - application/json
+      description: 記錄用戶的技術等級準確度，影響技術準確度評分
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: 技術準確度記錄請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RecordSkillLevelAccuracyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 記錄技術等級準確度
+      tags:
+      - reputation
+  /api/reputation/users/{userId}/update-ntrp:
+    post:
+      consumes:
+      - application/json
+      description: 基於信譽系統數據自動調整用戶NTRP等級
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 更新用戶NTRP等級
+      tags:
+      - reputation
+  /api/v1/auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: 發送密碼重設郵件
+      parameters:
+      - description: 忘記密碼請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 忘記密碼
+      tags:
+      - auth
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 用戶登入系統
+      parameters:
+      - description: 登入請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 用戶登入
+      tags:
+      - auth
+  /api/v1/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: 用戶登出系統，撤銷刷新令牌
+      parameters:
+      - description: 登出請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 用戶登出
+      tags:
+      - auth
+  /api/v1/auth/oauth/{provider}:
+    get:
+      description: 獲取指定提供商的 OAuth 授權 URL
+      parameters:
+      - description: OAuth 提供商
+        enum:
+        - google
+        - facebook
+        - apple
+        in: path
+        name: provider
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取 OAuth 授權 URL
+      tags:
+      - auth
+  /api/v1/auth/oauth/{provider}/callback:
+    post:
+      consumes:
+      - application/json
+      description: 處理 OAuth 提供商的回調並完成登入
+      parameters:
+      - description: OAuth 提供商
+        enum:
+        - google
+        - facebook
+        - apple
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: OAuth 登入請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OAuthLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: OAuth 回調處理
+      tags:
+      - auth
+  /api/v1/auth/oauth/{provider}/link:
+    post:
+      consumes:
+      - application/json
+      description: 將 OAuth 帳號關聯到當前用戶
+      parameters:
+      - description: OAuth 提供商
+        enum:
+        - google
+        - facebook
+        - apple
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: 關聯 OAuth 帳號請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LinkOAuthAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 關聯 OAuth 帳號
+      tags:
+      - auth
+  /api/v1/auth/oauth/{provider}/unlink:
+    delete:
+      consumes:
+      - application/json
+      description: 解除當前用戶與指定 OAuth 提供商的關聯
+      parameters:
+      - description: OAuth 提供商
+        enum:
+        - google
+        - facebook
+        - apple
+        in: path
+        name: provider
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 解除關聯 OAuth 帳號
+      tags:
+      - auth
+  /api/v1/auth/oauth/accounts:
+    get:
+      description: 獲取當前用戶已關聯的所有 OAuth 帳號列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取已關聯的 OAuth 帳號
+      tags:
+      - auth
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: 使用刷新令牌獲取新的訪問令牌
+      parameters:
+      - description: 刷新令牌請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 刷新訪問令牌
+      tags:
+      - auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: 註冊新用戶帳號
+      parameters:
+      - description: 註冊請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 用戶註冊
+      tags:
+      - auth
+  /api/v1/auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: 使用重設令牌重設密碼
+      parameters:
+      - description: 重設密碼請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ResetPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 重設密碼
+      tags:
+      - auth
+  /api/v1/bookings:
+    get:
+      consumes:
+      - application/json
+      description: 根據條件獲取預訂列表
+      parameters:
+      - description: 場地ID
+        in: query
+        name: courtId
+        type: string
+      - description: 用戶ID
+        in: query
+        name: userId
+        type: string
+      - description: 預訂狀態
+        enum:
+        - pending
+        - confirmed
+        - cancelled
+        - completed
+        in: query
+        name: status
+        type: string
+      - description: 開始日期 (YYYY-MM-DD)
+        in: query
+        name: startDate
+        type: string
+      - description: 結束日期 (YYYY-MM-DD)
+        in: query
+        name: endDate
+        type: string
+      - description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - description: 每頁數量
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.BookingListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取預訂列表
+      tags:
+      - bookings
+    post:
+      consumes:
+      - application/json
+      description: 為指定場地創建預訂
+      parameters:
+      - description: 創建預訂請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Booking'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建場地預訂
+      tags:
+      - bookings
+  /api/v1/bookings/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 根據ID獲取預訂的詳細信息
+      parameters:
+      - description: 預訂ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Booking'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取預訂詳情
+      tags:
+      - bookings
+    put:
+      consumes:
+      - application/json
+      description: 更新預訂信息
+      parameters:
+      - description: 預訂ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新預訂請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Booking'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新預訂
+      tags:
+      - bookings
+  /api/v1/bookings/{id}/cancel:
+    post:
+      consumes:
+      - application/json
+      description: 取消指定的預訂
+      parameters:
+      - description: 預訂ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 取消預訂
+      tags:
+      - bookings
+  /api/v1/chat/messages:
+    post:
+      consumes:
+      - application/json
+      description: 向聊天室發送訊息
+      parameters:
+      - description: 發送訊息請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SendMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.ChatMessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 發送訊息
+      tags:
+      - chat
+  /api/v1/chat/online-users:
+    get:
+      consumes:
+      - application/json
+      description: 獲取當前在線的用戶列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取在線用戶
+      tags:
+      - chat
+  /api/v1/chat/rooms:
+    get:
+      consumes:
+      - application/json
+      description: 獲取用戶參與的所有聊天室
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ChatRoomResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取聊天室列表
+      tags:
+      - chat
+    post:
+      consumes:
+      - application/json
+      description: 創建新的聊天室
+      parameters:
+      - description: 創建聊天室請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateChatRoomRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.ChatRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建聊天室
+      tags:
+      - chat
+  /api/v1/chat/rooms/{roomId}:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定聊天室的詳細信息
+      parameters:
+      - description: 聊天室ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ChatRoomResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取聊天室詳情
+      tags:
+      - chat
+  /api/v1/chat/rooms/{roomId}/join:
+    post:
+      consumes:
+      - application/json
+      description: 加入指定的聊天室 (WebSocket)
+      parameters:
+      - description: 聊天室ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 加入聊天室
+      tags:
+      - chat
+  /api/v1/chat/rooms/{roomId}/leave:
+    post:
+      consumes:
+      - application/json
+      description: 離開指定的聊天室
+      parameters:
+      - description: 聊天室ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 離開聊天室
+      tags:
+      - chat
+  /api/v1/chat/rooms/{roomId}/messages:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定聊天室的訊息列表
+      parameters:
+      - description: 聊天室ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      - default: 1
+        description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - default: 50
+        description: 每頁數量
+        in: query
+        name: limit
+        type: integer
+      - description: 獲取此時間之前的訊息 (RFC3339格式)
+        in: query
+        name: before
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.ChatMessageResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取聊天室訊息
+      tags:
+      - chat
+  /api/v1/chat/rooms/{roomId}/online-users:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定聊天室的在線用戶列表
+      parameters:
+      - description: 聊天室ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取聊天室在線用戶
+      tags:
+      - chat
+  /api/v1/chat/rooms/{roomId}/read:
+    post:
+      consumes:
+      - application/json
+      description: 標記聊天室中的訊息為已讀
+      parameters:
+      - description: 聊天室ID
+        in: path
+        name: roomId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 標記訊息為已讀
+      tags:
+      - chat
+  /api/v1/chat/ws:
+    get:
+      description: 建立 WebSocket 連接用於即時聊天
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: WebSocket 連接
+      tags:
+      - chat
+  /api/v1/coach-reviews:
+    get:
+      consumes:
+      - application/json
+      description: 獲取特定教練的所有評價
+      parameters:
+      - description: 教練ID
+        in: query
+        name: coachId
+        required: true
+        type: string
+      - description: 評分篩選
+        in: query
+        name: rating
+        type: integer
+      - description: 是否有評論
+        in: query
+        name: hasComment
+        type: boolean
+      - collectionFormat: multi
+        description: 標籤篩選
+        in: query
+        items:
+          type: string
+        name: tags
+        type: array
+      - default: 1
+        description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每頁數量
+        in: query
+        name: limit
+        type: integer
+      - description: 排序欄位
+        enum:
+        - rating
+        - createdAt
+        - isHelpful
+        in: query
+        name: sortBy
+        type: string
+      - description: 排序順序
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sortOrder
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練評價列表
+      tags:
+      - coach-reviews
+    post:
+      consumes:
+      - application/json
+      description: 學生對教練進行評價
+      parameters:
+      - description: 評價創建請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCoachReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CoachReview'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建教練評價
+      tags:
+      - coach-reviews
+  /api/v1/coach-reviews/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 刪除自己的教練評價
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 刪除教練評價
+      tags:
+      - coach-reviews
+    get:
+      consumes:
+      - application/json
+      description: 獲取特定教練評價的詳細信息
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CoachReview'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練評價詳情
+      tags:
+      - coach-reviews
+    put:
+      consumes:
+      - application/json
+      description: 更新自己的教練評價
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 評價更新請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCoachReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CoachReview'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新教練評價
+      tags:
+      - coach-reviews
+  /api/v1/coach-reviews/available-tags:
+    get:
+      consumes:
+      - application/json
+      description: 獲取所有可用的評價標籤選項
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取可用的評價標籤
+      tags:
+      - coach-reviews
+  /api/v1/coach-reviews/can-review:
+    get:
+      consumes:
+      - application/json
+      description: 檢查當前用戶是否可以評價指定教練
+      parameters:
+      - description: 教練ID
+        in: query
+        name: coachId
+        required: true
+        type: string
+      - description: 課程ID
+        in: query
+        name: lessonId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 檢查是否可以評價教練
+      tags:
+      - coach-reviews
+  /api/v1/coach-reviews/mark-helpful:
+    post:
+      consumes:
+      - application/json
+      description: 標記或取消標記評價為有用
+      parameters:
+      - description: 標記有用請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.MarkReviewHelpfulRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CoachReview'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 標記評價有用
+      tags:
+      - coach-reviews
+  /api/v1/coaches:
+    get:
+      consumes:
+      - application/json
+      description: 根據條件搜尋教練
+      parameters:
+      - collectionFormat: multi
+        description: 專長
+        in: query
+        items:
+          type: string
+        name: specialties
+        type: array
+      - description: 最少經驗年數
+        in: query
+        name: min_experience
+        type: integer
+      - description: 最多經驗年數
+        in: query
+        name: max_experience
+        type: integer
+      - description: 最低時薪
+        in: query
+        name: price_min
+        type: number
+      - description: 最高時薪
+        in: query
+        name: price_max
+        type: number
+      - collectionFormat: multi
+        description: 語言
+        in: query
+        items:
+          type: string
+        name: languages
+        type: array
+      - description: 最低評分
+        in: query
+        name: min_rating
+        type: number
+      - description: 是否已認證
+        in: query
+        name: is_verified
+        type: boolean
+      - default: 1
+        description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每頁數量
+        in: query
+        name: limit
+        type: integer
+      - description: 排序欄位
+        enum:
+        - rating
+        - experience
+        - hourlyRate
+        - createdAt
+        in: query
+        name: sort_by
+        type: string
+      - description: 排序順序
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 搜尋教練
+      tags:
+      - coaches
+    post:
+      consumes:
+      - application/json
+      description: 為用戶創建教練檔案
+      parameters:
+      - description: 教練檔案創建請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCoachProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Coach'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建教練檔案
+      tags:
+      - coaches
+  /api/v1/coaches/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 根據教練ID獲取教練詳細信息
+      parameters:
+      - description: 教練ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Coach'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練詳情
+      tags:
+      - coaches
+    put:
+      consumes:
+      - application/json
+      description: 更新教練檔案信息
+      parameters:
+      - description: 教練ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 教練檔案更新請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCoachProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Coach'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新教練檔案
+      tags:
+      - coaches
+  /api/v1/coaches/{id}/availability:
+    get:
+      consumes:
+      - application/json
+      description: 獲取教練在指定日期的可用時間段
+      parameters:
+      - description: 教練ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 日期 (YYYY-MM-DD)
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練可用時間
+      tags:
+      - lessons
+  /api/v1/coaches/{id}/lesson-types:
+    get:
+      consumes:
+      - application/json
+      description: 獲取教練的所有課程類型
+      parameters:
+      - description: 教練ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取課程類型列表
+      tags:
+      - lessons
+  /api/v1/coaches/{id}/review-statistics:
+    get:
+      consumes:
+      - application/json
+      description: 獲取教練的評價統計信息
+      parameters:
+      - description: 教練ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練評價統計
+      tags:
+      - coach-reviews
+  /api/v1/coaches/{id}/schedule:
+    get:
+      consumes:
+      - application/json
+      description: 獲取教練的時間表設定
+      parameters:
+      - description: 教練ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取教練時間表
+      tags:
+      - lessons
+  /api/v1/coaches/{id}/statistics:
+    get:
+      consumes:
+      - application/json
+      description: 獲取教練的課程統計和評價統計
+      parameters:
+      - description: 教練ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練統計信息
+      tags:
+      - coaches
+  /api/v1/coaches/certifications:
+    get:
+      consumes:
+      - application/json
+      description: 獲取所有可用的教練認證選項
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練認證選項
+      tags:
+      - coaches
+  /api/v1/coaches/currencies:
+    get:
+      consumes:
+      - application/json
+      description: 獲取教練可以選擇的貨幣選項
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取可用貨幣選項
+      tags:
+      - coaches
+  /api/v1/coaches/languages:
+    get:
+      consumes:
+      - application/json
+      description: 獲取教練可以選擇的語言選項
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取可用語言選項
+      tags:
+      - coaches
+  /api/v1/coaches/lesson-types:
+    post:
+      consumes:
+      - application/json
+      description: 教練創建新的課程類型和價格設定
+      parameters:
+      - description: 課程類型創建請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateLessonTypeRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.LessonType'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建課程類型
+      tags:
+      - lessons
+  /api/v1/coaches/my-profile:
+    get:
+      consumes:
+      - application/json
+      description: 獲取當前用戶的教練檔案
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Coach'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取我的教練檔案
+      tags:
+      - coaches
+  /api/v1/coaches/schedule:
+    put:
+      consumes:
+      - application/json
+      description: 更新教練的可用時間表
+      parameters:
+      - description: 時間表更新請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新教練時間表
+      tags:
+      - lessons
+  /api/v1/coaches/specialties:
+    get:
+      consumes:
+      - application/json
+      description: 獲取所有可用的教練專長選項
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取教練專長選項
+      tags:
+      - coaches
+  /api/v1/coaches/verify:
+    post:
+      consumes:
+      - application/json
+      description: 管理員認證教練資格
+      parameters:
+      - description: 教練認證請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CoachVerificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Coach'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 認證教練
+      tags:
+      - coaches
+  /api/v1/courts:
+    get:
+      consumes:
+      - application/json
+      description: 根據條件搜尋場地，支援地理位置搜尋和文字搜尋
+      parameters:
+      - description: 文字搜尋（場地名稱、描述、地址）
+        in: query
+        name: query
+        type: string
+      - description: 緯度
+        in: query
+        name: latitude
+        type: number
+      - description: 經度
+        in: query
+        name: longitude
+        type: number
+      - description: 搜尋半徑（公里）
+        in: query
+        name: radius
+        type: number
+      - description: 最低價格
+        in: query
+        name: minPrice
+        type: number
+      - description: 最高價格
+        in: query
+        name: maxPrice
+        type: number
+      - description: 場地類型
+        enum:
+        - hard
+        - clay
+        - grass
+        - indoor
+        - outdoor
+        in: query
+        name: courtType
+        type: string
+      - description: 設施列表
+        in: query
+        name: facilities
+        type: array
+      - description: 最低評分
+        in: query
+        name: minRating
+        type: number
+      - description: 排序欄位
+        enum:
+        - distance
+        - price
+        - rating
+        - name
+        in: query
+        name: sortBy
+        type: string
+      - description: 排序順序
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sortOrder
+        type: string
+      - description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - description: 每頁數量
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CourtSearchResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 搜尋場地
+      tags:
+      - courts
+    post:
+      consumes:
+      - application/json
+      description: 創建新的網球場地
+      parameters:
+      - description: 創建場地請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCourtRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Court'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建場地
+      tags:
+      - courts
+  /api/v1/courts/{courtId}/reviews/statistics:
+    get:
+      consumes:
+      - application/json
+      description: 獲取場地的評價統計信息
+      parameters:
+      - description: 場地ID
+        in: path
+        name: courtId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ReviewStatistics'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取場地評價統計
+      tags:
+      - reviews
+  /api/v1/courts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 刪除場地（軟刪除）
+      parameters:
+      - description: 場地ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 刪除場地
+      tags:
+      - courts
+    get:
+      consumes:
+      - application/json
+      description: 根據ID獲取場地的詳細信息
+      parameters:
+      - description: 場地ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Court'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取場地詳情
+      tags:
+      - courts
+    put:
+      consumes:
+      - application/json
+      description: 更新場地信息
+      parameters:
+      - description: 場地ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新場地請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCourtRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Court'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新場地
+      tags:
+      - courts
+  /api/v1/courts/{id}/images:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上傳場地圖片
+      parameters:
+      - description: 場地ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 圖片文件
+        in: formData
+        name: images
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 上傳場地圖片
+      tags:
+      - courts
+  /api/v1/courts/availability:
+    get:
+      consumes:
+      - application/json
+      description: 查詢指定場地在指定日期的可用時間段
+      parameters:
+      - description: 場地ID
+        in: query
+        name: courtId
+        required: true
+        type: string
+      - description: 查詢日期 (YYYY-MM-DD)
+        in: query
+        name: date
+        required: true
+        type: string
+      - description: 預訂時長（分鐘），默認60分鐘
+        in: query
+        name: duration
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AvailabilityResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取場地可用時間
+      tags:
+      - bookings
+  /api/v1/courts/facilities:
+    get:
+      consumes:
+      - application/json
+      description: 獲取所有可用的場地設施選項
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取可用設施列表
+      tags:
+      - courts
+  /api/v1/courts/types:
+    get:
+      consumes:
+      - application/json
+      description: 獲取所有可用的場地類型選項
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取場地類型列表
+      tags:
+      - courts
+  /api/v1/intelligent-scheduling/coaches/{coachId}/factors:
+    post:
+      consumes:
+      - application/json
+      description: 獲取教練推薦的詳細因子信息（用於調試和優化）
+      parameters:
+      - description: 教練ID
+        in: path
+        name: coachId
+        required: true
+        type: string
+      - description: 學生偏好
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.IntelligentSchedulingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取教練推薦因子
+      tags:
+      - intelligent-scheduling
+  /api/v1/intelligent-scheduling/detect-conflicts:
+    post:
+      consumes:
+      - application/json
+      description: 檢測指定時間是否與現有課程衝突
+      parameters:
+      - description: 衝突檢測請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConflictDetectionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 檢測排課衝突
+      tags:
+      - intelligent-scheduling
+  /api/v1/intelligent-scheduling/optimal-time:
+    post:
+      consumes:
+      - application/json
+      description: 為特定教練和學生尋找最佳的課程時間
+      parameters:
+      - description: 最佳時間查詢請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.OptimalTimeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 尋找最佳課程時間
+      tags:
+      - intelligent-scheduling
+  /api/v1/intelligent-scheduling/options:
+    get:
+      consumes:
+      - application/json
+      description: 獲取智能排課的可用選項和配置
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取智能排課選項
+      tags:
+      - intelligent-scheduling
+  /api/v1/intelligent-scheduling/recommendations:
+    post:
+      consumes:
+      - application/json
+      description: 根據學生偏好和技術水平推薦合適的教練和課程時間
+      parameters:
+      - description: 智能排課請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.IntelligentSchedulingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取智能教練推薦
+      tags:
+      - intelligent-scheduling
+  /api/v1/intelligent-scheduling/resolve-conflict:
+    post:
+      consumes:
+      - application/json
+      description: 通過調整課程時間來解決排課衝突
+      parameters:
+      - description: 衝突解決請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ConflictResolutionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 解決排課衝突
+      tags:
+      - intelligent-scheduling
+  /api/v1/lesson-types/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 刪除課程類型
+      parameters:
+      - description: 課程類型ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 刪除課程類型
+      tags:
+      - lessons
+    put:
+      consumes:
+      - application/json
+      description: 更新課程類型信息和價格
+      parameters:
+      - description: 課程類型ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 課程類型更新請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateLessonTypeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LessonType'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新課程類型
+      tags:
+      - lessons
+  /api/v1/lessons:
+    get:
+      consumes:
+      - application/json
+      description: 獲取課程列表（支援篩選）
+      parameters:
+      - description: 教練ID
+        in: query
+        name: coachId
+        type: string
+      - description: 學生ID
+        in: query
+        name: studentId
+        type: string
+      - description: 課程狀態
+        in: query
+        name: status
+        type: string
+      - description: 開始日期
+        in: query
+        name: startDate
+        type: string
+      - description: 結束日期
+        in: query
+        name: endDate
+        type: string
+      - default: 1
+        description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每頁數量
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取課程列表
+      tags:
+      - lessons
+    post:
+      consumes:
+      - application/json
+      description: 學生預訂課程
+      parameters:
+      - description: 課程創建請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateLessonRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Lesson'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建課程
+      tags:
+      - lessons
+  /api/v1/lessons/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 獲取課程詳細信息
+      parameters:
+      - description: 課程ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Lesson'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取課程詳情
+      tags:
+      - lessons
+    put:
+      consumes:
+      - application/json
+      description: 更新課程信息
+      parameters:
+      - description: 課程ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 課程更新請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateLessonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Lesson'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新課程
+      tags:
+      - lessons
+  /api/v1/lessons/{id}/cancel:
+    post:
+      consumes:
+      - application/json
+      description: 取消課程
+      parameters:
+      - description: 課程ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 取消課程請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CancelLessonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Lesson'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 取消課程
+      tags:
+      - lessons
+  /api/v1/match-statistics/matches/{matchId}/result:
+    post:
+      consumes:
+      - application/json
+      description: 記錄比賽的勝負結果和比分
+      parameters:
+      - description: 比賽ID
+        in: path
+        name: matchId
+        required: true
+        type: string
+      - description: 比賽結果請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RecordMatchResultRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 記錄比賽結果
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/pending-confirmations:
+    get:
+      consumes:
+      - application/json
+      description: 獲取用戶需要確認的比賽結果列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.MatchResult'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取待確認的比賽結果
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/privacy-settings:
+    get:
+      consumes:
+      - application/json
+      description: 獲取用戶的統計資訊隱私設定
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserPrivacySettings'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取用戶隱私設定
+      tags:
+      - match-statistics
+    put:
+      consumes:
+      - application/json
+      description: 更新用戶的統計資訊隱私設定
+      parameters:
+      - description: 隱私設定
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserPrivacySettings'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 更新用戶隱私設定
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/results/{resultId}/confirm:
+    post:
+      consumes:
+      - application/json
+      description: 確認比賽結果的準確性
+      parameters:
+      - description: 比賽結果ID
+        in: path
+        name: resultId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 確認比賽結果
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/summary:
+    get:
+      consumes:
+      - application/json
+      description: 獲取用戶配對統計的簡要摘要
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取配對統計摘要
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/users/{userId}:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定用戶的詳細配對統計資訊
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MatchStatistics'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取用戶配對統計資訊
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/users/{userId}/adjust-skill-level:
+    post:
+      consumes:
+      - application/json
+      description: 手動調整用戶的NTRP技術等級
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: 調整等級請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ManuallyAdjustSkillLevelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 手動調整技術等級
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/users/{userId}/history:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定用戶的配對歷史記錄
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - default: 20
+        description: 返回數量限制
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: 偏移量
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Match'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取用戶配對歷史
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/users/{userId}/reputation:
+    get:
+      consumes:
+      - application/json
+      description: 根據用戶隱私設定獲取信譽分數
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ReputationScore'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 根據隱私設定獲取信譽分數
+      tags:
+      - match-statistics
+  /api/v1/match-statistics/users/{userId}/skill-progression:
+    get:
+      consumes:
+      - application/json
+      description: 獲取用戶的技術等級變化歷史
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.SkillLevelRecord'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取技術等級進展
+      tags:
+      - match-statistics
+  /api/v1/matching/card-action:
+    post:
+      consumes:
+      - application/json
+      description: 處理用戶對抽卡配對的動作（喜歡、不喜歡、跳過）
+      parameters:
+      - description: 抽卡動作
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CardActionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 處理結果
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 請求錯誤
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 處理抽卡動作
+      tags:
+      - matching
+  /api/v1/matching/card-history:
+    get:
+      description: 獲取用戶的抽卡互動歷史記錄
+      parameters:
+      - default: 1
+        description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每頁數量
+        in: query
+        name: limit
+        type: integer
+      - description: 動作類型篩選
+        enum:
+        - like
+        - dislike
+        - skip
+        in: query
+        name: action
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 互動歷史
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取抽卡互動歷史
+      tags:
+      - matching
+  /api/v1/matching/create:
+    post:
+      consumes:
+      - application/json
+      description: 創建新的球友配對
+      parameters:
+      - description: 配對資訊
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateMatchRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 創建成功
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 請求錯誤
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 創建配對
+      tags:
+      - matching
+  /api/v1/matching/find:
+    post:
+      consumes:
+      - application/json
+      description: 根據條件尋找合適的球友配對
+      parameters:
+      - description: 配對條件
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.FindMatchesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 配對結果
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 請求錯誤
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 尋找配對
+      tags:
+      - matching
+  /api/v1/matching/history:
+    get:
+      description: 獲取用戶的配對歷史記錄
+      parameters:
+      - default: 1
+        description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: 每頁數量
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 配對歷史
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取配對歷史
+      tags:
+      - matching
+  /api/v1/matching/notifications:
+    get:
+      description: 獲取用戶的配對相關通知
+      parameters:
+      - default: 1
+        description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: 每頁數量
+        in: query
+        name: limit
+        type: integer
+      - default: false
+        description: 只顯示未讀
+        in: query
+        name: unread_only
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 通知列表
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取配對通知
+      tags:
+      - matching
+  /api/v1/matching/notifications/{notificationID}/read:
+    put:
+      consumes:
+      - application/json
+      description: 標記指定通知為已讀狀態
+      parameters:
+      - description: 通知ID
+        in: path
+        name: notificationID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 標記成功
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 請求錯誤
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: 通知不存在
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 標記通知為已讀
+      tags:
+      - matching
+  /api/v1/matching/random:
+    get:
+      consumes:
+      - application/json
+      description: 抽卡式隨機配對功能
+      parameters:
+      - default: 5
+        description: 配對數量
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 隨機配對結果
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 隨機配對
+      tags:
+      - matching
+  /api/v1/matching/reputation:
+    get:
+      description: 獲取用戶的信譽分數詳情
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 信譽分數
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取信譽分數
+      tags:
+      - matching
+  /api/v1/matching/reputation/{userID}:
+    put:
+      consumes:
+      - application/json
+      description: 更新用戶的信譽分數（通常在比賽結束後調用）
+      parameters:
+      - description: 用戶ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      - description: 信譽更新資訊
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateReputationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 請求錯誤
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 更新信譽分數
+      tags:
+      - matching
+  /api/v1/matching/statistics:
+    get:
+      description: 獲取用戶的配對統計資訊
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 統計資訊
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 未授權
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 伺服器錯誤
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取配對統計
+      tags:
+      - matching
+  /api/v1/racket-prices/{priceId}:
+    delete:
+      consumes:
+      - application/json
+      description: 刪除球拍價格記錄
+      parameters:
+      - description: 價格ID
+        in: path
+        name: priceId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 刪除球拍價格
+      tags:
+      - racket-prices
+    put:
+      consumes:
+      - application/json
+      description: 更新球拍價格資訊
+      parameters:
+      - description: 價格ID
+        in: path
+        name: priceId
+        required: true
+        type: string
+      - description: 更新的價格資訊
+        in: body
+        name: price
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateRacketPriceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.RacketPrice'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 更新球拍價格
+      tags:
+      - racket-prices
+  /api/v1/racket-prices/{priceId}/availability:
+    put:
+      consumes:
+      - application/json
+      description: 更新球拍價格的可用性狀態
+      parameters:
+      - description: 價格ID
+        in: path
+        name: priceId
+        required: true
+        type: string
+      - description: 可用性狀態
+        in: body
+        name: availability
+        required: true
+        schema:
+          additionalProperties:
+            type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 更新價格可用性
+      tags:
+      - racket-prices
+  /api/v1/racket-reviews/{reviewId}/helpful:
+    post:
+      consumes:
+      - application/json
+      description: 標記球拍評價為有用或無用
+      parameters:
+      - description: 評價ID
+        in: path
+        name: reviewId
+        required: true
+        type: string
+      - description: 是否有用
+        in: body
+        name: helpful
+        required: true
+        schema:
+          additionalProperties:
+            type: boolean
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 標記評價有用
+      tags:
+      - racket-reviews
+  /api/v1/rackets:
+    get:
+      consumes:
+      - application/json
+      description: 根據條件搜尋球拍
+      parameters:
+      - description: 搜尋關鍵字
+        in: query
+        name: query
+        type: string
+      - description: 品牌
+        in: query
+        name: brand
+        type: string
+      - description: 最小拍面大小
+        in: query
+        name: minHeadSize
+        type: integer
+      - description: 最大拍面大小
+        in: query
+        name: maxHeadSize
+        type: integer
+      - description: 最小重量
+        in: query
+        name: minWeight
+        type: integer
+      - description: 最大重量
+        in: query
+        name: maxWeight
+        type: integer
+      - description: 最低價格
+        in: query
+        name: minPrice
+        type: number
+      - description: 最高價格
+        in: query
+        name: maxPrice
+        type: number
+      - description: 力量等級
+        in: query
+        name: powerLevel
+        type: integer
+      - description: 控制等級
+        in: query
+        name: controlLevel
+        type: integer
+      - description: 操控等級
+        in: query
+        name: maneuverLevel
+        type: integer
+      - description: 穩定等級
+        in: query
+        name: stabilityLevel
+        type: integer
+      - description: 最低評分
+        in: query
+        name: minRating
+        type: number
+      - description: 排序欄位
+        enum:
+        - brand
+        - model
+        - price
+        - rating
+        - popularity
+        in: query
+        name: sortBy
+        type: string
+      - description: 排序順序
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sortOrder
+        type: string
+      - description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - description: 每頁數量
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RacketSearchResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 搜尋球拍
+      tags:
+      - rackets
+    post:
+      consumes:
+      - application/json
+      description: 創建新的球拍記錄
+      parameters:
+      - description: 球拍資訊
+        in: body
+        name: racket
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRacketRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Racket'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 創建球拍
+      tags:
+      - rackets
+  /api/v1/rackets/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 軟刪除球拍記錄
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 刪除球拍
+      tags:
+      - rackets
+    get:
+      consumes:
+      - application/json
+      description: 根據ID獲取球拍詳細資訊
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Racket'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取球拍詳情
+      tags:
+      - rackets
+    put:
+      consumes:
+      - application/json
+      description: 更新球拍資訊
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新的球拍資訊
+        in: body
+        name: racket
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateRacketRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Racket'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 更新球拍
+      tags:
+      - rackets
+  /api/v1/rackets/{id}/prices:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定球拍的所有價格資訊
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取球拍價格
+      tags:
+      - racket-prices
+    post:
+      consumes:
+      - application/json
+      description: 為球拍添加新的價格資訊
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 價格資訊
+        in: body
+        name: price
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRacketPriceRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.RacketPrice'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 創建球拍價格
+      tags:
+      - racket-prices
+  /api/v1/rackets/{id}/reviews:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定球拍的評價列表
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - description: 每頁數量
+        in: query
+        name: pageSize
+        type: integer
+      - description: 排序欄位
+        enum:
+        - rating
+        - date
+        - helpful
+        in: query
+        name: sortBy
+        type: string
+      - description: 排序順序
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sortOrder
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RacketReviewListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取球拍評價
+      tags:
+      - racket-reviews
+    post:
+      consumes:
+      - application/json
+      description: 為球拍創建新的評價
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 評價資訊
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRacketReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.RacketReview'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 創建球拍評價
+      tags:
+      - racket-reviews
+  /api/v1/rackets/{id}/reviews/statistics:
+    get:
+      consumes:
+      - application/json
+      description: 獲取指定球拍的評價統計資訊
+      parameters:
+      - description: 球拍ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RacketReviewStatistics'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取球拍評價統計
+      tags:
+      - racket-reviews
+  /api/v1/rackets/brands:
+    get:
+      consumes:
+      - application/json
+      description: 獲取所有可用的球拍品牌列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取可用品牌
+      tags:
+      - rackets
+  /api/v1/rackets/images:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上傳球拍相關圖片
+      parameters:
+      - description: 圖片文件
+        in: formData
+        name: images
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 上傳球拍圖片
+      tags:
+      - rackets
+  /api/v1/rackets/specifications:
+    get:
+      consumes:
+      - application/json
+      description: 獲取球拍規格的可選項目和範圍
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取球拍規格選項
+      tags:
+      - rackets
+  /api/v1/reviews:
+    get:
+      consumes:
+      - application/json
+      description: 根據條件獲取評價列表
+      parameters:
+      - description: 場地ID
+        in: query
+        name: courtId
+        type: string
+      - description: 用戶ID
+        in: query
+        name: userId
+        type: string
+      - description: 評分篩選
+        in: query
+        name: rating
+        type: integer
+      - description: 排序欄位
+        enum:
+        - rating
+        - created_at
+        - helpful
+        in: query
+        name: sortBy
+        type: string
+      - description: 排序順序
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sortOrder
+        type: string
+      - description: 頁碼
+        in: query
+        name: page
+        type: integer
+      - description: 每頁數量
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ReviewListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取評價列表
+      tags:
+      - reviews
+    post:
+      consumes:
+      - application/json
+      description: 為場地創建評價和評分
+      parameters:
+      - description: 創建評價請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CourtReview'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建場地評價
+      tags:
+      - reviews
+  /api/v1/reviews/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 刪除評價（軟刪除）
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 刪除評價
+      tags:
+      - reviews
+    get:
+      consumes:
+      - application/json
+      description: 根據ID獲取評價的詳細信息
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourtReview'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取評價詳情
+      tags:
+      - reviews
+    put:
+      consumes:
+      - application/json
+      description: 更新評價內容
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新評價請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CourtReview'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新評價
+      tags:
+      - reviews
+  /api/v1/reviews/{id}/helpful:
+    post:
+      consumes:
+      - application/json
+      description: 標記評價為有用或取消標記
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 是否有用
+        in: query
+        name: helpful
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 標記評價為有用
+      tags:
+      - reviews
+  /api/v1/reviews/{id}/report:
+    post:
+      consumes:
+      - application/json
+      description: 舉報不當評價
+      parameters:
+      - description: 評價ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 舉報評價請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ReportReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 舉報評價
+      tags:
+      - reviews
+  /api/v1/reviews/images:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上傳評價圖片
+      parameters:
+      - description: 圖片文件
+        in: formData
+        name: images
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 上傳評價圖片
+      tags:
+      - reviews
+  /api/v1/users/avatar:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上傳並更新用戶頭像
+      parameters:
+      - description: 頭像文件
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 上傳用戶頭像
+      tags:
+      - users
+  /api/v1/users/location:
+    put:
+      consumes:
+      - application/json
+      description: 更新用戶的地理位置信息
+      parameters:
+      - description: 位置更新請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LocationUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新用戶位置
+      tags:
+      - users
+  /api/v1/users/ntrp-levels:
+    get:
+      consumes:
+      - application/json
+      description: 獲取所有可用的 NTRP 等級和描述
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 獲取 NTRP 等級列表
+      tags:
+      - users
+  /api/v1/users/preferences:
+    put:
+      consumes:
+      - application/json
+      description: 更新用戶的打球偏好和隱私設定
+      parameters:
+      - description: 用戶偏好設定請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserPreferencesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新用戶偏好設定
+      tags:
+      - users
+  /api/v1/users/profile:
+    get:
+      consumes:
+      - application/json
+      description: 獲取當前用戶的詳細檔案信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 獲取用戶檔案
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: 為新用戶創建詳細檔案
+      parameters:
+      - description: 用戶檔案創建請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 創建用戶檔案
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: 更新當前用戶的檔案信息
+      parameters:
+      - description: 用戶檔案更新請求
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: 更新用戶檔案
+      tags:
+      - users
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: 檢查 API 服務器狀態
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 健康檢查
+      tags:
+      - system
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
