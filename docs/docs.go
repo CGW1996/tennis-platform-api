@@ -3668,6 +3668,586 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/discovery/card-action": {
+            "post": {
+                "description": "處理用戶對抽卡配對的動作（喜歡、不喜歡、跳過）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "處理抽卡動作",
+                "parameters": [
+                    {
+                        "description": "抽卡動作",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CardActionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "處理結果",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "請求錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/card-history": {
+            "get": {
+                "description": "獲取用戶的抽卡互動歷史記錄",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "獲取抽卡互動歷史",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "頁碼",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "每頁數量",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "like",
+                            "dislike",
+                            "skip"
+                        ],
+                        "type": "string",
+                        "description": "動作類型篩選",
+                        "name": "action",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "互動歷史",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/create": {
+            "post": {
+                "description": "創建新的球友配對",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "創建配對",
+                "parameters": [
+                    {
+                        "description": "配對資訊",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateMatchRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "創建成功",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "請求錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/find": {
+            "post": {
+                "description": "根據條件探索合適的球友",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "尋找配對",
+                "parameters": [
+                    {
+                        "description": "配對條件",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FindMatchesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "配對結果",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "請求錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/history": {
+            "get": {
+                "description": "獲取用戶的配對歷史記錄",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "獲取配對歷史",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "頁碼",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "每頁數量",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "配對歷史",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/notifications": {
+            "get": {
+                "description": "獲取用戶的配對相關通知",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "獲取配對通知",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "頁碼",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "每頁數量",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "只顯示未讀",
+                        "name": "unread_only",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "通知列表",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/notifications/{notificationID}/read": {
+            "put": {
+                "description": "標記指定通知為已讀狀態",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "標記通知為已讀",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "通知ID",
+                        "name": "notificationID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "標記成功",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "請求錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "通知不存在",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/random": {
+            "get": {
+                "description": "抽卡式隨機配對功能",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "隨機配對",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 5,
+                        "description": "配對數量",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "隨機配對結果",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/reputation": {
+            "get": {
+                "description": "獲取用戶的信譽分數詳情",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "獲取信譽分數",
+                "responses": {
+                    "200": {
+                        "description": "信譽分數",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/reputation/{userID}": {
+            "put": {
+                "description": "更新用戶的信譽分數（通常在比賽結束後調用）",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "更新信譽分數",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用戶ID",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "信譽更新資訊",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateReputationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "請求錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/discovery/statistics": {
+            "get": {
+                "description": "獲取用戶的配對統計資訊",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "discovery"
+                ],
+                "summary": "獲取配對統計",
+                "responses": {
+                    "200": {
+                        "description": "統計資訊",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/intelligent-scheduling/coaches/{coachId}/factors": {
             "post": {
                 "security": [
@@ -4944,9 +5524,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/matching/card-action": {
+        "/api/v1/matches/create": {
             "post": {
-                "description": "處理用戶對抽卡配對的動作（喜歡、不喜歡、跳過）",
+                "description": "創建新的競賽對戰配對",
                 "consumes": [
                     "application/json"
                 ],
@@ -4954,127 +5534,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "matching"
+                    "matches"
                 ],
-                "summary": "處理抽卡動作",
-                "parameters": [
-                    {
-                        "description": "抽卡動作",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CardActionRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "處理結果",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "請求錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "未授權",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "伺服器錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/matching/card-history": {
-            "get": {
-                "description": "獲取用戶的抽卡互動歷史記錄",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matching"
-                ],
-                "summary": "獲取抽卡互動歷史",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "頁碼",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 20,
-                        "description": "每頁數量",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "like",
-                            "dislike",
-                            "skip"
-                        ],
-                        "type": "string",
-                        "description": "動作類型篩選",
-                        "name": "action",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "互動歷史",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "未授權",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "伺服器錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/matching/create": {
-            "post": {
-                "description": "創建新的球友配對",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matching"
-                ],
-                "summary": "創建配對",
+                "summary": "創建競賽配對",
                 "parameters": [
                     {
                         "description": "配對資訊",
@@ -5118,9 +5580,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/matching/find": {
+        "/api/v1/matches/find": {
             "post": {
-                "description": "根據條件尋找合適的球友配對",
+                "description": "尋找適合對戰的對手，重視技術匹配和信譽分數",
                 "consumes": [
                     "application/json"
                 ],
@@ -5128,23 +5590,23 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "matching"
+                    "matches"
                 ],
-                "summary": "尋找配對",
+                "summary": "尋找對手",
                 "parameters": [
                     {
-                        "description": "配對條件",
+                        "description": "對手篩選條件",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.FindMatchesRequest"
+                            "$ref": "#/definitions/dto.FindCompetitiveMatchesRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "配對結果",
+                        "description": "對手列表",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -5174,16 +5636,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/matching/history": {
+        "/api/v1/matches/history": {
             "get": {
-                "description": "獲取用戶的配對歷史記錄",
+                "description": "獲取過往的競賽對戰記錄",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "matching"
+                    "matches"
                 ],
-                "summary": "獲取配對歷史",
+                "summary": "獲取對戰歷史",
                 "parameters": [
                     {
                         "type": "integer",
@@ -5202,7 +5664,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "配對歷史",
+                        "description": "對戰歷史",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -5225,16 +5687,128 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/matching/notifications": {
-            "get": {
-                "description": "獲取用戶的配對相關通知",
+        "/api/v1/partners/create": {
+            "post": {
+                "description": "創建新的球友練習配對",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "matching"
+                    "partners"
                 ],
-                "summary": "獲取配對通知",
+                "summary": "創建球友練習配對",
+                "parameters": [
+                    {
+                        "description": "配對資訊",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateMatchRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "創建成功",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "請求錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/partners/find": {
+            "post": {
+                "description": "尋找適合練習的球友，重視位置接近度和時間彈性",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "partners"
+                ],
+                "summary": "尋找球友",
+                "parameters": [
+                    {
+                        "description": "球友篩選條件",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.FindPartnersRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "球友列表",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "請求錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "401": {
+                        "description": "未授權",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "伺服器錯誤",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/partners/history": {
+            "get": {
+                "description": "獲取過往的練習球友記錄",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "partners"
+                ],
+                "summary": "獲取球友歷史",
                 "parameters": [
                     {
                         "type": "integer",
@@ -5245,263 +5819,15 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "default": 20,
+                        "default": 10,
                         "description": "每頁數量",
                         "name": "limit",
                         "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "default": false,
-                        "description": "只顯示未讀",
-                        "name": "unread_only",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "通知列表",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "未授權",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "伺服器錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/matching/notifications/{notificationID}/read": {
-            "put": {
-                "description": "標記指定通知為已讀狀態",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matching"
-                ],
-                "summary": "標記通知為已讀",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "通知ID",
-                        "name": "notificationID",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "標記成功",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "請求錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "未授權",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "通知不存在",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "伺服器錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/matching/random": {
-            "get": {
-                "description": "抽卡式隨機配對功能",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matching"
-                ],
-                "summary": "隨機配對",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "default": 5,
-                        "description": "配對數量",
-                        "name": "count",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "隨機配對結果",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "未授權",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "伺服器錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/matching/reputation": {
-            "get": {
-                "description": "獲取用戶的信譽分數詳情",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matching"
-                ],
-                "summary": "獲取信譽分數",
-                "responses": {
-                    "200": {
-                        "description": "信譽分數",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "未授權",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "伺服器錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/matching/reputation/{userID}": {
-            "put": {
-                "description": "更新用戶的信譽分數（通常在比賽結束後調用）",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matching"
-                ],
-                "summary": "更新信譽分數",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "用戶ID",
-                        "name": "userID",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "信譽更新資訊",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UpdateReputationRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "更新成功",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "請求錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "401": {
-                        "description": "未授權",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "伺服器錯誤",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/matching/statistics": {
-            "get": {
-                "description": "獲取用戶的配對統計資訊",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "matching"
-                ],
-                "summary": "獲取配對統計",
-                "responses": {
-                    "200": {
-                        "description": "統計資訊",
+                        "description": "球友歷史",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -7362,6 +7688,23 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.AvailabilitySlot": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "string"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.BookingListResponse": {
             "type": "object",
             "properties": {
@@ -8043,11 +8386,23 @@ const docTemplate = `{
                 "participantIds"
             ],
             "properties": {
+                "availabilitySlots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AvailabilitySlot"
+                    }
+                },
                 "courtId": {
                     "type": "string"
                 },
                 "matchType": {
                     "type": "string"
+                },
+                "ntrpMax": {
+                    "type": "number"
+                },
+                "ntrpMin": {
+                    "type": "number"
                 },
                 "participantIds": {
                     "type": "array",
@@ -8055,7 +8410,20 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "playTypes": {
+                    "description": "rally, singles, doubles,omitempty\"` + "`" + `",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "preferredCourt": {
+                    "type": "string"
+                },
                 "scheduledAt": {
+                    "type": "string"
+                },
+                "specialRequirements": {
                     "type": "string"
                 }
             }
@@ -8376,11 +8744,17 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.FindMatchesRequest": {
+        "dto.FindCompetitiveMatchesRequest": {
             "type": "object",
             "properties": {
                 "age_range": {
                     "$ref": "#/definitions/services.AgeRange"
+                },
+                "availability": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/services.AvailabilityCriteria"
+                    }
                 },
                 "gender": {
                     "type": "string"
@@ -8388,23 +8762,118 @@ const docTemplate = `{
                 "limit": {
                     "type": "integer"
                 },
+                "location": {
+                    "$ref": "#/definitions/services.LocationCriteria"
+                },
+                "match_type": {
+                    "description": "singles, doubles",
+                    "type": "string"
+                },
+                "max_distance": {
+                    "type": "number"
+                },
+                "min_reputation_score": {
+                    "description": "較高的信譽要求",
+                    "type": "number"
+                },
+                "ntrp_range": {
+                    "description": "嚴格的等級匹配",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/services.NTRPRange"
+                        }
+                    ]
+                },
+                "preferred_court_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.FindMatchesRequest": {
+            "type": "object",
+            "properties": {
+                "age_range": {
+                    "$ref": "#/definitions/services.AgeRange"
+                },
+                "availability": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/services.AvailabilityCriteria"
+                    }
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "location": {
+                    "$ref": "#/definitions/services.LocationCriteria"
+                },
                 "max_distance": {
                     "type": "number"
                 },
                 "min_reputation_score": {
                     "type": "number"
                 },
-                "ntrp_level": {
-                    "type": "number"
+                "ntrp_range": {
+                    "$ref": "#/definitions/services.NTRPRange"
                 },
-                "playing_frequency": {
-                    "type": "string"
-                },
-                "preferred_times": {
+                "play_type": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
+                },
+                "playing_frequency": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.FindPartnersRequest": {
+            "type": "object",
+            "properties": {
+                "age_range": {
+                    "$ref": "#/definitions/services.AgeRange"
+                },
+                "availability": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/services.AvailabilityCriteria"
+                    }
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "location": {
+                    "$ref": "#/definitions/services.LocationCriteria"
+                },
+                "max_distance": {
+                    "type": "number"
+                },
+                "min_reputation_score": {
+                    "type": "number"
+                },
+                "ntrp_range": {
+                    "description": "較寬鬆的範圍",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/services.NTRPRange"
+                        }
+                    ]
+                },
+                "play_type": {
+                    "description": "rally, doubles, singles",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "playing_frequency": {
+                    "type": "string"
                 }
             }
         },
@@ -9674,6 +10143,27 @@ const docTemplate = `{
                 }
             }
         },
+        "models.AvailabilitySlot": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "description": "weekday, weekend, or Mon, Tue, etc.",
+                    "type": "string"
+                },
+                "endTime": {
+                    "description": "12:00",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "Specific location preference",
+                    "type": "string"
+                },
+                "startTime": {
+                    "description": "10:00",
+                    "type": "string"
+                }
+            }
+        },
         "models.AvailableHours": {
             "type": "object",
             "additionalProperties": {
@@ -10703,9 +11193,6 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "notes": {
-                    "type": "string"
-                },
                 "participants": {
                     "type": "array",
                     "items": {
@@ -10721,11 +11208,18 @@ const docTemplate = `{
                 "scheduledAt": {
                     "type": "string"
                 },
+                "specialRequirements": {
+                    "type": "string"
+                },
                 "startedAt": {
                     "type": "string"
                 },
                 "status": {
                     "description": "pending, confirmed, in_progress, completed, cancelled",
+                    "type": "string"
+                },
+                "targetCriteria": {
+                    "description": "JSON: {ntrpMin, ntrpMax, playTypes, ...}",
                     "type": "string"
                 },
                 "type": {
@@ -11470,6 +11964,13 @@ const docTemplate = `{
         "models.UserProfile": {
             "type": "object",
             "properties": {
+                "availabilitySlots": {
+                    "description": "Detailed availability",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AvailabilitySlot"
+                    }
+                },
                 "avatarUrl": {
                     "type": "string"
                 },
@@ -11507,6 +12008,13 @@ const docTemplate = `{
                 },
                 "ntrpLevel": {
                     "type": "number"
+                },
+                "playTypes": {
+                    "description": "rally, singles, doubles",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "playingFrequency": {
                     "description": "casual, regular, competitive",
@@ -11552,6 +12060,41 @@ const docTemplate = `{
                 },
                 "min": {
                     "type": "integer"
+                }
+            }
+        },
+        "services.AvailabilityCriteria": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "description": "morning, afternoon, evening",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "weekday, weekend",
+                    "type": "string"
+                }
+            }
+        },
+        "services.LocationCriteria": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "district": {
+                    "type": "string"
+                }
+            }
+        },
+        "services.NTRPRange": {
+            "type": "object",
+            "properties": {
+                "max": {
+                    "type": "number"
+                },
+                "min": {
+                    "type": "number"
                 }
             }
         },

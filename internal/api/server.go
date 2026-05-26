@@ -28,7 +28,9 @@ type Server struct {
 	userController            *controllers.UserController
 	courtController           *controllers.CourtController
 	coachController           *controllers.CoachController
-	matchingController        *controllers.MatchingController
+	discoveryController       *controllers.DiscoveryController
+	partnersController        *controllers.PartnersController
+	matchesController         *controllers.MatchesController
 	chatController            *controllers.ChatController
 	reputationController      *controllers.ReputationController
 	matchStatisticsController *controllers.MatchStatisticsController
@@ -76,7 +78,9 @@ func NewServer(cfg *config.Config, database *db.Database) *Server {
 	userController := controllers.NewUserController(userUsecase, uploadService)
 	courtController := controllers.NewCourtController(courtUsecase, reviewUsecase, bookingUsecase, uploadService)
 	coachController := controllers.NewCoachController(coachUsecase)
-	matchingController := controllers.NewMatchingController(matchingUsecase)
+	discoveryController := controllers.NewDiscoveryController(matchingUsecase)
+	partnersController := controllers.NewPartnersController(matchingUsecase)
+	matchesController := controllers.NewMatchesController(matchingUsecase)
 	chatController := controllers.NewChatController(chatUsecase, websocketService)
 	reputationController := controllers.NewReputationController(database.DB)
 	matchStatisticsController := controllers.NewMatchStatisticsController(database.DB)
@@ -93,7 +97,9 @@ func NewServer(cfg *config.Config, database *db.Database) *Server {
 		userController:            userController,
 		courtController:           courtController,
 		coachController:           coachController,
-		matchingController:        matchingController,
+		discoveryController:       discoveryController,
+		partnersController:        partnersController,
+		matchesController:         matchesController,
 		chatController:            chatController,
 		reputationController:      reputationController,
 		matchStatisticsController: matchStatisticsController,
@@ -346,22 +352,40 @@ func (s *Server) setupRoutes() {
 		}
 
 		// 配對相關路由
-		matching := v1.Group("/matching")
-		matching.Use(middleware.AuthMiddleware(s.jwtService))
+		discovery := v1.Group("/discovery")
+		discovery.Use(middleware.AuthMiddleware(s.jwtService))
 		{
-			matching.POST("/find", s.matchingController.FindMatches)
-			matching.GET("/random", s.matchingController.FindRandomMatches)
-			matching.GET("/reputation", s.matchingController.GetReputationScore)
-			matching.GET("/history", s.matchingController.GetMatchingHistory)
-			matching.POST("/create", s.matchingController.CreateMatch)
-			matching.GET("/statistics", s.matchingController.GetMatchingStatistics)
-			matching.PUT("/reputation/:userID", s.matchingController.UpdateReputation)
+			discovery.POST("/find", s.discoveryController.FindMatches)
+			discovery.GET("/random", s.discoveryController.FindRandomMatches)
+			discovery.GET("/reputation", s.discoveryController.GetReputationScore)
+			discovery.GET("/history", s.discoveryController.GetMatchingHistory)
+			discovery.POST("/create", s.discoveryController.CreateMatch)
+			discovery.GET("/statistics", s.discoveryController.GetMatchingStatistics)
+			discovery.PUT("/reputation/:userID", s.discoveryController.UpdateReputation)
 
 			// 抽卡配對相關路由
-			matching.POST("/card-action", s.matchingController.ProcessCardAction)
-			matching.GET("/card-history", s.matchingController.GetCardInteractionHistory)
-			matching.GET("/notifications", s.matchingController.GetMatchNotifications)
-			matching.PUT("/notifications/:notificationID/read", s.matchingController.MarkNotificationAsRead)
+			discovery.POST("/card-action", s.discoveryController.ProcessCardAction)
+			discovery.GET("/card-history", s.discoveryController.GetCardInteractionHistory)
+			discovery.GET("/notifications", s.discoveryController.GetMatchNotifications)
+			discovery.PUT("/notifications/:notificationID/read", s.discoveryController.MarkNotificationAsRead)
+		}
+
+		// 球友配對相關路由（練習性質）
+		partners := v1.Group("/partners")
+		partners.Use(middleware.AuthMiddleware(s.jwtService))
+		{
+			partners.POST("/find", s.partnersController.FindPartners)
+			partners.GET("/history", s.partnersController.GetPartnerHistory)
+			partners.POST("/create", s.partnersController.CreatePartnerMatch)
+		}
+
+		// 對手配對相關路由（競賽性質）
+		matches := v1.Group("/matches")
+		matches.Use(middleware.AuthMiddleware(s.jwtService))
+		{
+			matches.POST("/find", s.matchesController.FindMatches)
+			matches.GET("/history", s.matchesController.GetMatchHistory)
+			matches.POST("/create", s.matchesController.CreateMatch)
 		}
 
 		// 俱樂部相關路由

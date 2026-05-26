@@ -2,7 +2,10 @@ package usecases
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"math"
+	"strings"
 	"time"
 
 	"tennis-platform/backend/internal/models"
@@ -50,6 +53,229 @@ func (uc *MatchingUsecase) FindMatches(
 	// 計算配對分數
 	var results []services.MatchingResult
 	weights := services.DefaultMatchingWeights()
+
+	for _, candidate := range filteredCandidates {
+		result := uc.matchingService.CalculateMatchingScore(
+			requester,
+			&candidate,
+			criteria,
+			weights,
+		)
+		results = append(results, result)
+	}
+
+	// 排序並限制結果數量
+	rankedResults := uc.matchingService.RankCandidates(results)
+	if len(rankedResults) > limit {
+		rankedResults = rankedResults[:limit]
+	}
+
+	return rankedResults, nil
+}
+
+// FindPartnerRequests 尋找球友請求（練習性質）
+func (uc *MatchingUsecase) FindPartnerRequests(
+	ctx context.Context,
+	userID string,
+	criteria services.MatchingCriteria,
+	limit int,
+) ([]models.Match, error) {
+	// 獲取請求者資訊
+	// requester, err := uc.getUserWithProfile(userID)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to get requester profile: %w", err)
+	// }
+
+	// 構建查詢
+	query := uc.db.WithContext(ctx).
+		Preload("Participants").
+		Preload("Participants.Profile").
+		Preload("Court"). // Preload Court for location filtering
+		Where("matches.status = ?", "pending").
+		Where("matches.type = ?", "practice")
+
+	// 排除自己發起的請求 (查詢 match_participants 表來過濾)
+	query = query.Where("NOT EXISTS (SELECT 1 FROM match_participants WHERE match_participants.match_id = matches.id AND match_participants.user_id = ?)", userID)
+
+	var matches []models.Match
+	if err := query.Limit(limit * 2).Find(&matches).Error; err != nil {
+		return nil, fmt.Errorf("failed to find partner requests: %w", err)
+	}
+
+	// 內存過濾
+	var filteredMatches []models.Match
+	for _, match := range matches {
+		// 1. 識別發起人 (Organizer)
+		var organizer *models.User
+		for i := range match.Participants {
+			// 避免使用 &p 的指標陷阱 (Go < 1.22)
+			if match.Participants[i].ID != userID {
+				organizer = &match.Participants[i]
+				break
+			}
+		}
+
+		if organizer == nil || organizer.Profile == nil {
+			continue
+		}
+
+		// 2. 應用使用者篩選條件 (User's Criteria) -> 檢查發起人是否符合
+
+		// 地點過濾 (City + District)
+		if criteria.Location != nil && criteria.Location.City != "" {
+			matchedLocation := false
+
+			// Helper function to check location string
+			checkLocation := func(locStr string) bool {
+				if !strings.Contains(locStr, criteria.Location.City) {
+					return false
+				}
+				if criteria.Location.District != "" && !strings.Contains(locStr, criteria.Location.District) {
+					return false
+				}
+				return true
+			}
+
+			// 1. Check Availability Slots
+			for _, slot := range organizer.Profile.AvailabilitySlots {
+				if checkLocation(slot.Location) {
+					matchedLocation = true
+					break
+				}
+			}
+
+			// 2. Fallback: Check Court Address if attached to match
+			if !matchedLocation && match.Court != nil {
+				if checkLocation(match.Court.Address) {
+					matchedLocation = true
+				}
+			}
+
+			if !matchedLocation {
+				continue
+			}
+		}
+
+		// PlayTypes 過濾 (Intersection check)
+		if len(criteria.PlayTypes) > 0 {
+			matchedPlayType := false
+
+			// Check Match Target Criteria (If specified, this overrides implicit profile preferences)
+			if match.TargetCriteria != nil {
+				var target struct {
+					PlayTypes []string `json:"playTypes"`
+				}
+				if err := json.Unmarshal([]byte(*match.TargetCriteria), &target); err == nil && len(target.PlayTypes) > 0 {
+					for _, reqType := range criteria.PlayTypes {
+						for _, targetType := range target.PlayTypes {
+							if reqType == targetType {
+								matchedPlayType = true
+								break
+							}
+						}
+						if matchedPlayType {
+							break
+						}
+					}
+				} else {
+					// If parsing failed or empty, fallback to profile
+					// But if TargetCriteria exists but has no PlayTypes, it implicitly means "Any"?
+					// Or maybe we should fall back to profile. Let's assume fallback to profile if empty.
+				}
+			}
+
+			// If not matched via Target Criteria, check Organizer Profile
+			if !matchedPlayType && organizer.Profile != nil {
+				for _, reqType := range criteria.PlayTypes {
+					for _, userType := range organizer.Profile.PlayTypes {
+						if reqType == userType {
+							matchedPlayType = true
+							break
+						}
+					}
+					if matchedPlayType {
+						break
+					}
+				}
+			}
+
+			if !matchedPlayType {
+				continue
+			}
+		}
+
+		// NTRP 過濾 (使用者想找的等級範圍 vs 發起人的等級)
+		if criteria.NTRPRange != nil && organizer.Profile.NTRPLevel != nil {
+			level := *organizer.Profile.NTRPLevel
+			if level < criteria.NTRPRange.Min || level > criteria.NTRPRange.Max {
+				continue
+			}
+		}
+
+		// 3. (可選) 檢查是否符合對方的 TargetCriteria
+		// 如果 match.TargetCriteria 存在，可以進一步檢查自己是否符合對方的要求
+		// 目前暫不嚴格執行此檢查，以免過濾掉太多結果，且需要載入 requester profile
+		if match.TargetCriteria != nil {
+			// 如果未來需要雙向匹配檢查，可以在此實作
+		}
+
+		filteredMatches = append(filteredMatches, match)
+		if len(filteredMatches) >= limit {
+			break
+		}
+	}
+
+	return filteredMatches, nil
+}
+
+// FindPartners (Deprecated: Use FindPartnerRequests)
+// 為了保持兼容性，暫時保留但不使用，或者直接修改這個簽名
+// 根據計劃，我們將修改 Controller 調用新方法，所以這裡可以保留舊方法做參考，或者直接替換
+// 這裡選擇：保留舊方法名，但內部邏輯改為調用 FindPartnerRequests 並適配返回值，
+// 但 Controller 需要 Match 結構，所以 Controller 也會改。
+// 我們直接在這裡把 FindPartners 改成 FindPartnerRequests 的邏輯是不行的，因為返回值類型不同。
+// 所以我新增了 FindPartnerRequests，並將在 Controller 中切換使用。
+
+// FindCompetitiveMatches 尋找對手（競賽性質）
+func (uc *MatchingUsecase) FindCompetitiveMatches(
+	ctx context.Context,
+	userID string,
+	criteria services.MatchingCriteria,
+	limit int,
+) ([]services.MatchingResult, error) {
+	// 獲取請求者資訊
+	requester, err := uc.getUserWithProfile(userID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get requester profile: %w", err)
+	}
+
+	// 對於對手配對，NTRP範圍較嚴格（±0.5）
+	if criteria.NTRPRange != nil {
+		criteria.NTRPRange.Min = math.Max(1.0, criteria.NTRPRange.Min-0.25)
+		criteria.NTRPRange.Max = math.Min(7.0, criteria.NTRPRange.Max+0.25)
+	}
+
+	// 對於對手配對，提高最低信譽要求
+	if criteria.MinReputationScore == nil {
+		minRep := 70.0
+		criteria.MinReputationScore = &minRep
+	} else if *criteria.MinReputationScore < 70.0 {
+		minRep := 70.0
+		criteria.MinReputationScore = &minRep
+	}
+
+	// 獲取候選人列表
+	candidates, err := uc.getCandidates(ctx, criteria, limit*3)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get candidates: %w", err)
+	}
+
+	// 篩選候選人
+	filteredCandidates := uc.matchingService.FilterCandidates(candidates, criteria)
+
+	// 使用對手配對權重計算分數
+	var results []services.MatchingResult
+	weights := services.OpponentMatchingWeights()
 
 	for _, candidate := range filteredCandidates {
 		result := uc.matchingService.CalculateMatchingScore(
@@ -219,6 +445,11 @@ func (uc *MatchingUsecase) CreateMatch(
 	matchType string,
 	courtID *string,
 	scheduledAt *string,
+	availabilitySlots []models.AvailabilitySlot,
+	specialRequirements *string,
+	ntrpMin *float64,
+	ntrpMax *float64,
+	playTypes []string,
 ) (*models.Match, error) {
 	// 開始事務
 	tx := uc.db.WithContext(ctx).Begin()
@@ -228,16 +459,50 @@ func (uc *MatchingUsecase) CreateMatch(
 		}
 	}()
 
+	// 如果提供了可用時段，更新發起人的個人檔案
+	if len(availabilitySlots) > 0 {
+		var profile models.UserProfile
+		if err := tx.Where("user_id = ?", organizerID).First(&profile).Error; err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to find user profile: %w", err)
+		}
+
+		profile.AvailabilitySlots = availabilitySlots
+		if err := tx.Save(&profile).Error; err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to update user availability slots: %w", err)
+		}
+	}
+
+	// Serialize TargetCriteria
+	var targetCriteriaJSON *string
+	if ntrpMin != nil || ntrpMax != nil || len(playTypes) > 0 {
+		criteria := map[string]interface{}{
+			"ntrpMin":   ntrpMin,
+			"ntrpMax":   ntrpMax,
+			"playTypes": playTypes,
+		}
+		jsonBytes, _ := json.Marshal(criteria)
+		jsonStr := string(jsonBytes)
+		targetCriteriaJSON = &jsonStr
+	}
+
 	// 創建比賽記錄
 	match := models.Match{
-		Type:    matchType,
-		Status:  "pending",
-		CourtID: courtID,
+		Type:                matchType,
+		Status:              "pending",
+		CourtID:             courtID,
+		TargetCriteria:      targetCriteriaJSON,
+		SpecialRequirements: specialRequirements,
 	}
 
 	if scheduledAt != nil {
-		// 解析時間字符串
-		// TODO: 實作時間解析邏輯
+		parsedTime, err := time.Parse(time.RFC3339, *scheduledAt)
+		if err != nil {
+			tx.Rollback()
+			return nil, fmt.Errorf("failed to parse scheduledAt: %w", err)
+		}
+		match.ScheduledAt = &parsedTime
 	}
 
 	if err := tx.Create(&match).Error; err != nil {
@@ -300,7 +565,8 @@ func (uc *MatchingUsecase) CreateMatch(
 		Preload("Participants.Profile").
 		Preload("Court").
 		Preload("ChatRoom").
-		First(&match, match.ID).Error; err != nil {
+		Where("id = ?", match.ID).
+		First(&match).Error; err != nil {
 		return nil, fmt.Errorf("failed to reload match: %w", err)
 	}
 
@@ -564,7 +830,8 @@ func (uc *MatchingUsecase) createMatchFromCardInteraction(
 	if err := tx.Preload("Participants").
 		Preload("Participants.Profile").
 		Preload("ChatRoom").
-		First(&match, match.ID).Error; err != nil {
+		Where("id = ?", match.ID).
+		First(&match).Error; err != nil {
 		return nil, err
 	}
 

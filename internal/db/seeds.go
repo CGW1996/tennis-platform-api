@@ -169,7 +169,8 @@ func (s *Seeder) seedCourts() error {
 	log.Println("Seeding courts...")
 
 	// 創建營業時間 JSON
-	operatingHours1, _ := json.Marshal(map[string]string{
+	// 大多數河濱球場為 06:00-22:00 或全天開放，這裡設定標準時間
+	standardHours, _ := json.Marshal(map[string]string{
 		"monday":    "06:00-22:00",
 		"tuesday":   "06:00-22:00",
 		"wednesday": "06:00-22:00",
@@ -179,82 +180,162 @@ func (s *Seeder) seedCourts() error {
 		"sunday":    "06:00-22:00",
 	})
 
-	operatingHours2, _ := json.Marshal(map[string]string{
-		"monday":    "07:00-21:00",
-		"tuesday":   "07:00-21:00",
-		"wednesday": "07:00-21:00",
-		"thursday":  "07:00-21:00",
-		"friday":    "07:00-21:00",
-		"saturday":  "08:00-20:00",
-		"sunday":    "08:00-20:00",
-	})
-
-	operatingHours3, _ := json.Marshal(map[string]string{
-		"monday":    "05:30-22:00",
-		"tuesday":   "05:30-22:00",
-		"wednesday": "05:30-22:00",
-		"thursday":  "05:30-22:00",
-		"friday":    "05:30-22:00",
-		"saturday":  "05:30-22:00",
-		"sunday":    "05:30-22:00",
+	// 林口球場可能有不同時間，暫時使用標準時間或稍作調整
+	extendedHours, _ := json.Marshal(map[string]string{
+		"monday":    "05:00-23:00",
+		"tuesday":   "05:00-23:00",
+		"wednesday": "05:00-23:00",
+		"thursday":  "05:00-23:00",
+		"friday":    "05:00-23:00",
+		"saturday":  "05:00-23:00",
+		"sunday":    "05:00-23:00",
 	})
 
 	courts := []models.Court{
+		// Taipei City Courts
+		{
+			ID:   uuid.New().String(),
+			Name: "百齡河濱公園(社子岸)網球場",
+			Description: func() *string {
+				v := "位於百齡橋下基隆河兩岸，設有夜間照明，交通便利。"
+				return &v
+			}(),
+			Address:        "臺北市士林區通河東街1段 (百齡橋下)",
+			Latitude:       25.0834,
+			Longitude:      121.5245, // Approximate coords for Bailing
+			Facilities:     []string{"硬地", "夜間照明", "收費停車場"},
+			CourtType:      "hard",
+			PricePerHour:   140.0,
+			Currency:       "TWD",
+			Images:         []string{"/images/courts/bailing.jpg"},
+			OperatingHours: standardHours,
+			ContactPhone:   func() *string { v := "02-2810-7257"; return &v }(), // Using a placeholder or generic riverside park phone if specific not found
+			AverageRating:  4.2,
+			TotalReviews:   15,
+			IsActive:       true,
+		},
 		{
 			ID:             uuid.New().String(),
-			Name:           "台北網球中心",
-			Description:    func() *string { v := "專業網球場地，設備完善，適合各種水平的球員"; return &v }(),
-			Address:        "台北市信義區松壽路20號",
-			Latitude:       25.0330,
-			Longitude:      121.5654,
-			Facilities:     []string{"更衣室", "淋浴間", "停車場", "餐廳", "專業照明"},
+			Name:           "景美河濱公園網球場",
+			Description:    func() *string { v := "位於景美溪畔，風景優美，適合晨間與夜間運動。"; return &v }(),
+			Address:        "臺北市文山區景美溪畔 (近景美街)",
+			Latitude:       24.9912,
+			Longitude:      121.5367, // Approximate coords
+			Facilities:     []string{"硬地", "夜間照明", "公廁"},
 			CourtType:      "hard",
-			PricePerHour:   800.0,
+			PricePerHour:   140.0,
 			Currency:       "TWD",
-			Images:         []string{"/images/courts/taipei-tennis-center-1.jpg", "/images/courts/taipei-tennis-center-2.jpg"},
-			OperatingHours: operatingHours1,
-			ContactPhone:   func() *string { v := "+886-2-2345-6789"; return &v }(),
-			ContactEmail:   func() *string { v := "info@taipeitenniscenter.com"; return &v }(),
-			Website:        func() *string { v := "https://taipeitenniscenter.com"; return &v }(),
-			AverageRating:  4.5,
+			Images:         []string{"/images/courts/jingmei.jpg"},
+			OperatingHours: standardHours,
+			AverageRating:  4.0,
+			TotalReviews:   20,
+			IsActive:       true,
+		},
+		{
+			ID:             uuid.New().String(),
+			Name:           "彩虹河濱公園網球場",
+			Description:    func() *string { v := "位於內湖堤頂大道旁，麥帥二橋下，場地標準。"; return &v }(),
+			Address:        "臺北市內湖區堤頂大道1段 (麥帥二橋下)",
+			Latitude:       25.0601,
+			Longitude:      121.5798, // Approximate coords
+			Facilities:     []string{"硬地", "夜間照明"},
+			CourtType:      "hard",
+			PricePerHour:   140.0,
+			Currency:       "TWD",
+			Images:         []string{"/images/courts/rainbow.jpg"},
+			OperatingHours: standardHours,
+			AverageRating:  4.3,
+			TotalReviews:   35,
+			IsActive:       true,
+		},
+		{
+			ID:             uuid.New().String(),
+			Name:           "觀山河濱公園網球場",
+			Description:    func() *string { v := "基隆河畔優質網球場，鄰近塔悠路。"; return &v }(),
+			Address:        "臺北市松山區基隆河畔 (近塔悠路)",
+			Latitude:       25.0660,
+			Longitude:      121.5620, // Approximate coords
+			Facilities:     []string{"硬地", "夜間照明", "飲水機"},
+			CourtType:      "hard",
+			PricePerHour:   140.0,
+			Currency:       "TWD",
+			Images:         []string{"/images/courts/guanshan.jpg"},
+			OperatingHours: standardHours,
+			AverageRating:  4.1,
+			TotalReviews:   18,
+			IsActive:       true,
+		},
+
+		// New Taipei City Courts
+		{
+			ID:             uuid.New().String(),
+			Name:           "土城媽祖田公園網球場",
+			Description:    func() *string { v := "鄰近鴻海精密，河濱開放式球場。"; return &v }(),
+			Address:        "新北市土城區環河路 (近鴻海精密)",
+			Latitude:       24.9605,
+			Longitude:      121.4280, // Approximate coords
+			Facilities:     []string{"硬地", "戶外空間"},
+			CourtType:      "hard",
+			PricePerHour:   0.0, // Often free or low cost in parks
+			Currency:       "TWD",
+			Images:         []string{"/images/courts/mazutian.jpg"},
+			OperatingHours: standardHours,
+			AverageRating:  3.8,
+			TotalReviews:   12,
+			IsActive:       true,
+		},
+		{
+			ID:   uuid.New().String(),
+			Name: "新北淡水網球場",
+			Description: func() *string {
+				v := "位於淡水區，提供當地居民與球友優質的運動空間。"
+				return &v
+			}(),
+			Address:        "新北市淡水區濱海路三段與崁頂五路路口",
+			Latitude:       25.1889,
+			Longitude:      121.4363, // Approximate coords
+			Facilities:     []string{"硬地", "夜間照明"},
+			CourtType:      "hard",
+			PricePerHour:   100.0, // Estimating sharing cost
+			Currency:       "TWD",
+			Images:         []string{"/images/courts/tamsui.jpg"},
+			OperatingHours: standardHours,
+			AverageRating:  4.0,
+			TotalReviews:   8,
+			IsActive:       true,
+		},
+		{
+			ID:             uuid.New().String(),
+			Name:           "林口運動網球場",
+			Description:    func() *string { v := "林口區主要運動設施之一，設施維護良好。"; return &v }(),
+			Address:        "新北市林口區民族一路",
+			Latitude:       25.0700,
+			Longitude:      121.3650, // Approximate coords
+			Facilities:     []string{"硬地", "夜間照明", "休息區"},
+			CourtType:      "hard",
+			PricePerHour:   150.0, // Day price 150
+			Currency:       "TWD",
+			Images:         []string{"/images/courts/linkou.jpg"},
+			OperatingHours: extendedHours,
+			AverageRating:  4.4,
 			TotalReviews:   25,
 			IsActive:       true,
 		},
 		{
 			ID:             uuid.New().String(),
-			Name:           "大安森林公園網球場",
-			Description:    func() *string { v := "位於市中心的公園網球場，環境優美，價格實惠"; return &v }(),
-			Address:        "台北市大安區新生南路二段1號",
-			Latitude:       25.0173,
-			Longitude:      121.5397,
-			Facilities:     []string{"更衣室", "飲水機", "休息區"},
+			Name:           "新北八里網球場",
+			Description:    func() *string { v := "位於八里左岸附近，結合觀光與運動的休閒場所。"; return &v }(),
+			Address:        "新北市八里區觀海大道100號",
+			Latitude:       25.1585,
+			Longitude:      121.4300, // Approximate coords
+			Facilities:     []string{"硬地", "景觀優美"},
 			CourtType:      "hard",
-			PricePerHour:   400.0,
+			PricePerHour:   0.0, // Checking access rules, often free or club sharing
 			Currency:       "TWD",
-			Images:         []string{"/images/courts/daan-park-1.jpg"},
-			OperatingHours: operatingHours2,
-			ContactPhone:   func() *string { v := "+886-2-2700-1234"; return &v }(),
-			AverageRating:  4.0,
-			TotalReviews:   18,
-			IsActive:       true,
-		},
-		{
-			ID:             uuid.New().String(),
-			Name:           "天母運動公園網球場",
-			Description:    func() *string { v := "天母地區知名網球場，場地寬敞，設施完善"; return &v }(),
-			Address:        "台北市士林區忠誠路二段77號",
-			Latitude:       25.1175,
-			Longitude:      121.5252,
-			Facilities:     []string{"更衣室", "淋浴間", "停車場", "商店", "觀眾席"},
-			CourtType:      "clay",
-			PricePerHour:   600.0,
-			Currency:       "TWD",
-			Images:         []string{"/images/courts/tianmu-1.jpg", "/images/courts/tianmu-2.jpg"},
-			OperatingHours: operatingHours3,
-			ContactPhone:   func() *string { v := "+886-2-2876-5432"; return &v }(),
-			ContactEmail:   func() *string { v := "tianmu@sportspark.gov.tw"; return &v }(),
-			AverageRating:  4.2,
-			TotalReviews:   32,
+			Images:         []string{"/images/courts/bali.jpg"},
+			OperatingHours: standardHours,
+			AverageRating:  4.1,
+			TotalReviews:   10,
 			IsActive:       true,
 		},
 	}

@@ -96,6 +96,32 @@ func DefaultMatchingWeights() MatchingWeights {
 	}
 }
 
+// PartnerMatchingWeights 球友配對權重（練習性質）
+// 重視：社交、時間彈性、位置接近度
+func PartnerMatchingWeights() MatchingWeights {
+	return MatchingWeights{
+		Distance:          0.30, // 位置接近度很重要
+		TimeCompatibility: 0.25, // 時間彈性匹配很重要
+		PlayingStyle:      0.20, // 練球習慣匹配
+		SkillLevel:        0.15, // NTRP範圍較寬鬆
+		Age:               0.05, // 年齡次要
+		Reputation:        0.05, // 信譽次要
+	}
+}
+
+// OpponentMatchingWeights 對手配對權重（競賽性質）
+// 重視：技術匹配、信譽分數、勝率
+func OpponentMatchingWeights() MatchingWeights {
+	return MatchingWeights{
+		SkillLevel:        0.40, // NTRP等級嚴格匹配最重要
+		Reputation:        0.25, // 信譽分數很重要
+		Distance:          0.15, // 位置重要性降低
+		TimeCompatibility: 0.10, // 時間次要
+		PlayingStyle:      0.05, // 風格次要
+		Age:               0.05, // 年齡次要
+	}
+}
+
 // CalculateMatchingScore 計算配對分數
 func (s *MatchingService) CalculateMatchingScore(
 	requester *models.User,

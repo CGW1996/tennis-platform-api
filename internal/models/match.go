@@ -9,18 +9,19 @@ import (
 
 // Match 球友配對/比賽
 type Match struct {
-	ID          string         `json:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
-	Type        string         `json:"type" gorm:"not null"`            // casual, practice, tournament
-	Status      string         `json:"status" gorm:"default:'pending'"` // pending, confirmed, in_progress, completed, cancelled
-	CourtID     *string        `json:"courtId" gorm:"type:uuid"`
-	ScheduledAt *time.Time     `json:"scheduledAt"`
-	StartedAt   *time.Time     `json:"startedAt"`
-	CompletedAt *time.Time     `json:"completedAt"`
-	Duration    *int           `json:"duration"` // 分鐘
-	Notes       *string        `json:"notes" gorm:"type:text"`
-	CreatedAt   time.Time      `json:"createdAt"`
-	UpdatedAt   time.Time      `json:"updatedAt"`
-	DeletedAt   gorm.DeletedAt `json:"-" gorm:"index"`
+	ID                  string         `json:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	Type                string         `json:"type" gorm:"not null"`            // casual, practice, tournament
+	Status              string         `json:"status" gorm:"default:'pending'"` // pending, confirmed, in_progress, completed, cancelled
+	CourtID             *string        `json:"courtId" gorm:"type:uuid"`
+	ScheduledAt         *time.Time     `json:"scheduledAt"`
+	StartedAt           *time.Time     `json:"startedAt"`
+	CompletedAt         *time.Time     `json:"completedAt"`
+	Duration            *int           `json:"duration"`                         // 分鐘
+	TargetCriteria      *string        `json:"targetCriteria" gorm:"type:jsonb"` // JSON: {ntrpMin, ntrpMax, playTypes, ...}
+	SpecialRequirements *string        `json:"specialRequirements" gorm:"type:text"`
+	CreatedAt           time.Time      `json:"createdAt"`
+	UpdatedAt           time.Time      `json:"updatedAt"`
+	DeletedAt           gorm.DeletedAt `json:"-" gorm:"index"`
 
 	// 關聯
 	Court        *Court        `json:"court,omitempty" gorm:"constraint:OnDelete:SET NULL"`

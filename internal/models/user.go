@@ -34,28 +34,37 @@ type User struct {
 	ClubMembers   []ClubMember   `json:"clubMembers,omitempty" gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 }
 
+// AvailabilitySlot 可用時間段
+type AvailabilitySlot struct {
+	Day       string `json:"day"`       // weekday, weekend, or Mon, Tue, etc.
+	StartTime string `json:"startTime"` // 10:00
+	EndTime   string `json:"endTime"`   // 12:00
+	Location  string `json:"location"`  // Specific location preference
+}
+
 // UserProfile 用戶詳細檔案
 type UserProfile struct {
-	UserID            string         `json:"userId" gorm:"type:uuid;primaryKey"`
-	FirstName         string         `json:"firstName" gorm:"not null"`
-	LastName          string         `json:"lastName" gorm:"not null"`
-	AvatarURL         *string        `json:"avatarUrl"`
-	NTRPLevel         *float64       `json:"ntrpLevel" gorm:"type:decimal(2,1);check:ntrp_level >= 1.0 AND ntrp_level <= 7.0"`
-	PlayingStyle      *string        `json:"playingStyle"` // aggressive, defensive, all-court
-	PreferredHand     *string        `json:"preferredHand" gorm:"check:preferred_hand IN ('right', 'left', 'both')"`
-	Latitude          *float64       `json:"latitude"`
-	Longitude         *float64       `json:"longitude"`
-	LocationPrivacy   bool           `json:"locationPrivacy" gorm:"default:false"` // true = 隱藏精確位置
-	Bio               *string        `json:"bio" gorm:"type:text"`
-	BirthDate         *time.Time     `json:"birthDate" gorm:"type:date"`
-	Gender            *string        `json:"gender" gorm:"check:gender IN ('male', 'female', 'other')"`
-	PlayingFrequency  *string        `json:"playingFrequency"`             // casual, regular, competitive
-	PlayTypes         pq.StringArray `json:"playTypes" gorm:"type:text[]"` // rally, singles, doubles
-	PreferredTimes    pq.StringArray `json:"preferredTimes" gorm:"type:text[]" swaggertype:"array,string"`
-	MaxTravelDistance *float64       `json:"maxTravelDistance"` // 公里
-	ProfilePrivacy    string         `json:"profilePrivacy" gorm:"default:'public';check:profile_privacy IN ('public', 'friends', 'private')"`
-	CreatedAt         time.Time      `json:"createdAt"`
-	UpdatedAt         time.Time      `json:"updatedAt"`
+	UserID            string             `json:"userId" gorm:"type:uuid;primaryKey"`
+	FirstName         string             `json:"firstName" gorm:"not null"`
+	LastName          string             `json:"lastName" gorm:"not null"`
+	AvatarURL         *string            `json:"avatarUrl"`
+	NTRPLevel         *float64           `json:"ntrpLevel" gorm:"type:decimal(2,1);check:ntrp_level >= 1.0 AND ntrp_level <= 7.0"`
+	PlayingStyle      *string            `json:"playingStyle"` // aggressive, defensive, all-court
+	PreferredHand     *string            `json:"preferredHand" gorm:"check:preferred_hand IN ('right', 'left', 'both')"`
+	Latitude          *float64           `json:"latitude"`
+	Longitude         *float64           `json:"longitude"`
+	LocationPrivacy   bool               `json:"locationPrivacy" gorm:"default:false"` // true = 隱藏精確位置
+	Bio               *string            `json:"bio" gorm:"type:text"`
+	BirthDate         *time.Time         `json:"birthDate" gorm:"type:date"`
+	Gender            *string            `json:"gender" gorm:"check:gender IN ('male', 'female', 'other')"`
+	PlayingFrequency  *string            `json:"playingFrequency"`                                        // casual, regular, competitive
+	PlayTypes         pq.StringArray     `json:"playTypes" gorm:"type:text[]" swaggertype:"array,string"` // rally, singles, doubles
+	PreferredTimes    pq.StringArray     `json:"preferredTimes" gorm:"type:text[]" swaggertype:"array,string"`
+	AvailabilitySlots []AvailabilitySlot `json:"availabilitySlots" gorm:"serializer:json"` // Detailed availability
+	MaxTravelDistance *float64           `json:"maxTravelDistance"`                        // 公里
+	ProfilePrivacy    string             `json:"profilePrivacy" gorm:"default:'public';check:profile_privacy IN ('public', 'friends', 'private')"`
+	CreatedAt         time.Time          `json:"createdAt"`
+	UpdatedAt         time.Time          `json:"updatedAt"`
 
 	// 關聯
 	User *User `json:"user,omitempty" gorm:"constraint:OnDelete:CASCADE"`
